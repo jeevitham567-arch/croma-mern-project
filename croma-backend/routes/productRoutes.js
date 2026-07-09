@@ -6,8 +6,9 @@ const {
   getProducts,
 } = require("../controllers/productController");
 
+const verifyToken = require("../middleware/authMiddleware");
 
-router.post("/", addProduct);
+router.post("/", verifyToken, addProduct);
 
 router.get("/", getProducts);
 
