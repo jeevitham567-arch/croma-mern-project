@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
+
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
+import Categories from "../components/Categories";
+import ProductCard from "../components/ProductCard";
 import Footer from "../components/Footer";
 
 function Home() {
@@ -23,24 +26,35 @@ function Home() {
   return (
     <>
       <Navbar />
+
       <Hero />
 
-      <div style={{ padding: "30px" }}>
-        <h2>Latest Products</h2>
+      <Categories />
 
-        {products.map((product) => (
-          <div
-            key={product._id}
-            style={{
-              border: "1px solid #ddd",
-              padding: "15px",
-              margin: "10px 0",
-            }}
-          >
-            <h3>{product.name}</h3>
-            <p>₹ {product.price}</p>
-          </div>
-        ))}
+      <div style={{ padding: "40px" }}>
+        <h2
+          style={{
+            textAlign: "center",
+            marginBottom: "30px",
+          }}
+        >
+          Latest Products
+        </h2>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+            gap: "20px",
+          }}
+        >
+          {products.map((product) => (
+            <ProductCard
+              key={product._id}
+              product={product}
+            />
+          ))}
+        </div>
       </div>
 
       <Footer />
