@@ -34,18 +34,19 @@ function ProductCard({ product }) {
 
       <Link to={`/product/${product._id}`}>
         <button
-          style={{
-            padding: "10px 20px",
-            background: "#00bcd4",
-            color: "#fff",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-            marginTop: "10px",
-          }}
-        >
-          View Details
-        </button>
+          onClick={() => addToCart(product._id)}
+             style={{
+             padding: "10px 20px",
+             background: "#00bcd4",
+             color: "#fff",
+             border: "none",
+             borderRadius: "5px",
+             cursor: "pointer",
+             marginTop: "10px",
+      }}
+      >
+  Add To Cart
+</button>
       </Link>
     </div>
   );

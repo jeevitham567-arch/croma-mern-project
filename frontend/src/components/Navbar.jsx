@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-function Navbar() {
+function Navbar({ search, setSearch }) {
   return (
     <nav
       style={{
@@ -30,6 +30,8 @@ function Navbar() {
       <input
         type="text"
         placeholder="Search Products..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
         style={{
           width: "350px",
           padding: "10px",

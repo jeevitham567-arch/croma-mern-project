@@ -1,12 +1,31 @@
 const Cart = require("../models/cart");
-
-// Add to Cart
 const addToCart = async (req, res) => {
   try {
+    const { product, quantity } = req.body;
+
+  
+    const existingCart = await Cart.findOne({
+      user: req.user.id,
+      product,
+    });
+
+    if (existingCart) {
+      existingCart.quantity += quantity;
+
+      await existingCart.save();
+
+      return res.status(200).json({
+        success: true,
+        message: "Cart Updated",
+        cart: existingCart,
+      });
+    }
+
+    // Create new cart item
     const cart = await Cart.create({
       user: req.user.id,
-      product: req.body.product,
-      quantity: req.body.quantity,
+      product,
+      quantity,
     });
 
     res.status(201).json({
@@ -23,11 +42,11 @@ const addToCart = async (req, res) => {
   }
 };
 
-// Get User Cart
 const getCart = async (req, res) => {
   try {
-    const cart = await Cart.find({ user: req.user.id })
-      .populate("product");
+    const cart = await Cart.find({
+      user: req.user.id,
+    }).populate("product");
 
     res.status(200).json({
       success: true,
@@ -43,7 +62,6 @@ const getCart = async (req, res) => {
   }
 };
 
-// Update Quantity
 const updateCart = async (req, res) => {
   try {
 
@@ -52,7 +70,9 @@ const updateCart = async (req, res) => {
       {
         quantity: req.body.quantity,
       },
-      { new: true }
+      {
+        new: true,
+      }
     );
 
     res.status(200).json({
@@ -71,9 +91,7 @@ const updateCart = async (req, res) => {
   }
 };
 
-// Remove Cart Item
 const removeCart = async (req, res) => {
-
   try {
 
     await Cart.findByIdAndDelete(req.params.id);
@@ -91,7 +109,6 @@ const removeCart = async (req, res) => {
     });
 
   }
-
 };
 
 module.exports = {

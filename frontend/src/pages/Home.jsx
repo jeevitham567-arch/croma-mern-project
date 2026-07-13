@@ -9,6 +9,8 @@ import Footer from "../components/Footer";
 
 function Home() {
   const [products, setProducts] = useState([]);
+  const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   useEffect(() => {
     getProducts();
@@ -23,13 +25,34 @@ function Home() {
     }
   };
 
+  // Search + Category Filter
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.name
+      .toLowerCase()
+      .includes(search.toLowerCase());
+
+    const matchesCategory =
+      selectedCategory === "All" ||
+      product.category === selectedCategory;
+
+    return matchesSearch && matchesCategory;
+  });
+
   return (
     <>
-      <Navbar />
+      <Navbar
+        search={search}
+        setSearch={setSearch}
+      />
 
-      <Hero />
+      {search === "" && <Hero />}
 
-      <Categories />
+      {search === "" && (
+        <Categories
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+        />
+      )}
 
       <div style={{ padding: "40px" }}>
         <h2
@@ -38,7 +61,7 @@ function Home() {
             marginBottom: "30px",
           }}
         >
-          Latest Products
+          {search ? "Search Results" : "Latest Products"}
         </h2>
 
         <div
@@ -48,12 +71,24 @@ function Home() {
             gap: "20px",
           }}
         >
-          {products.map((product) => (
-            <ProductCard
-              key={product._id}
-              product={product}
-            />
-          ))}
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map((product) => (
+              <ProductCard
+                key={product._id}
+                product={product}
+              />
+            ))
+          ) : (
+            <h2
+              style={{
+                textAlign: "center",
+                width: "100%",
+                color: "gray",
+              }}
+            >
+              No products found.
+            </h2>
+          )}
         </div>
       </div>
 

@@ -2,6 +2,10 @@ import "./Categories.css";
 
 const categories = [
   {
+    name: "All",
+    image: "https://cdn-icons-png.flaticon.com/512/833/833314.png",
+  },
+  {
     name: "Mobiles",
     image: "https://cdn-icons-png.flaticon.com/512/545/545245.png",
   },
@@ -27,26 +31,31 @@ const categories = [
   },
 ];
 
-function Categories() {
+function Categories({ selectedCategory, setSelectedCategory }) {
   return (
     <div className="categories">
-
       <h2>Shop By Category</h2>
 
       <div className="category-container">
-
         {categories.map((item, index) => (
-          <div className="category-card" key={index}>
-
+          <div
+            key={index}
+            className="category-card"
+            onClick={() => setSelectedCategory(item.name)}
+            style={{
+              cursor: "pointer",
+              border:
+                selectedCategory === item.name
+                  ? "2px solid #00bcd4"
+                  : "1px solid #ddd",
+            }}
+          >
             <img src={item.image} alt={item.name} />
 
             <h3>{item.name}</h3>
-
           </div>
         ))}
-
       </div>
-
     </div>
   );
 }
