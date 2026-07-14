@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import logo from "../assets/Croma_Logo_acrkvn.svg";
 
 function Navbar({ search, setSearch }) {
   return (
@@ -9,40 +10,52 @@ function Navbar({ search, setSearch }) {
         alignItems: "center",
         padding: "15px 40px",
         background: "#1a1a1a",
-        color: "white",
       }}
     >
       {/* Logo */}
-      <h2>
-        <Link
-          to="/"
+      <Link
+        to="/"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          textDecoration: "none",
+        }}
+      >
+        <img
+          src={logo}
+          alt="Croma Logo"
           style={{
-            color: "#00e6e6",
-            textDecoration: "none",
-            fontWeight: "bold",
+            width: "120px",
+            height: "40px",
+            objectFit: "contain",
           }}
-        >
-          Croma
-        </Link>
-      </h2>
+        />
+      </Link>
 
       {/* Search Bar */}
       <input
         type="text"
-        placeholder="Search Products..."
+        placeholder="What are you looking for?"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
         style={{
-          width: "350px",
-          padding: "10px",
-          borderRadius: "5px",
+          width: "400px",
+          padding: "10px 15px",
+          borderRadius: "8px",
           border: "none",
           outline: "none",
+          fontSize: "16px",
         }}
       />
 
       {/* Navigation Links */}
-      <div style={{ display: "flex", gap: "20px" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: "20px",
+          alignItems: "center",
+        }}
+      >
         <Link
           to="/"
           style={{ color: "white", textDecoration: "none" }}
