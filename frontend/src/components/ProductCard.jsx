@@ -14,7 +14,7 @@ function ProductCard({ product }) {
       }}
     >
       <img
-        src={product.image}
+        src={`http://localhost:5000/uploads/${product.image}`}
         alt={product.name}
         style={{
           width: "180px",
