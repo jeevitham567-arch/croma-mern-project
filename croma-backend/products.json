@@ -5,7 +5,8 @@
     "description": "Apple smartphone with A16 Bionic chip",
     "category": "Mobiles",
     "stock": 15,
-    "image": "iphone15.jpg"
+    "image": "iphone15.jpg",
+    "rating": 4.8
   },
   {
     "name": "Samsung Galaxy S24",
@@ -13,7 +14,8 @@
     "description": "Samsung flagship smartphone",
     "category": "Mobiles",
     "stock": 20,
-    "image": "s24.jpg"
+    "image": "s24.jpg",
+    "rating": 4.7
   },
   {
     "name": "OnePlus 12",
@@ -21,7 +23,8 @@
     "description": "High-performance Android smartphone",
     "category": "Mobiles",
     "stock": 18,
-    "image": "oneplus12.jpg"
+    "image": "oneplus12.jpg",
+    "rating": 4.6
   },
   {
     "name": "Vivo V30",
@@ -29,7 +32,8 @@
     "description": "Slim design smartphone",
     "category": "Mobiles",
     "stock": 25,
-    "image": "vivov30.jpg"
+    "image": "vivov30.jpg",
+    "rating": 4.5
   },
   {
     "name": "Oppo Reno 11",
@@ -37,7 +41,8 @@
     "description": "Camera-focused smartphone",
     "category": "Mobiles",
     "stock": 22,
-    "image": "opporeno11.jpg"
+    "image": "opporeno11.jpg",
+    "rating": 4.4
   },
   {
     "name": "MacBook Air M3",
@@ -45,7 +50,8 @@
     "description": "Apple M3 lightweight laptop",
     "category": "Laptops",
     "stock": 10,
-    "image": "macbookairm3.jpg"
+    "image": "macbookairm3.jpg",
+    "rating": 4.9
   },
   {
     "name": "Dell Inspiron 15",
@@ -53,7 +59,8 @@
     "description": "Dell laptop for work and study",
     "category": "Laptops",
     "stock": 12,
-    "image": "dellinspiron15.jpg"
+    "image": "dellinspiron15.jpg",
+    "rating": 4.6
   },
   {
     "name": "HP Pavilion",
@@ -61,7 +68,8 @@
     "description": "HP performance laptop",
     "category": "Laptops",
     "stock": 14,
-    "image": "hppavilion.jpg"
+    "image": "hppavilion.jpg",
+    "rating": 4.5
   },
   {
     "name": "Lenovo IdeaPad",
@@ -69,7 +77,8 @@
     "description": "Reliable Lenovo laptop",
     "category": "Laptops",
     "stock": 16,
-    "image": "lenovoideapad.jpg"
+    "image": "lenovoideapad.jpg",
+    "rating": 4.4
   },
   {
     "name": "ASUS Vivobook",
@@ -77,206 +86,232 @@
     "description": "Stylish ASUS laptop",
     "category": "Laptops",
     "stock": 11,
-    "image": "asusvivobook.jpg"
+    "image": "asusvivobook.jpg",
+    "rating": 4.5
   },
   {
-  "name": "Acer Aspire 7",
-  "price": 52999,
-  "description": "Gaming laptop with powerful performance",
-  "category": "Laptops",
-  "stock": 10,
-  "image": "aceraspire7.jpg"
-},
-{
-  "name": "LG OLED Smart TV",
-  "price": 89999,
-  "description": "55-inch 4K OLED Smart TV",
-  "category": "TV",
-  "stock": 8,
-  "image": "lgoledtv.jpg"
-},
-{
-  "name": "Samsung Crystal 4K TV",
-  "price": 64999,
-  "description": "50-inch Crystal UHD Smart TV",
-  "category": "TV",
-  "stock": 9,
-  "image": "samsungtv.jpg"
-},
-{
-  "name": "Sony Bravia 4K",
-  "price": 79999,
-  "description": "Sony 4K Ultra HD Smart TV",
-  "category": "TV",
-  "stock": 7,
-  "image": "sonybravia.jpg"
-},
-{
-  "name": "Mi X Series TV",
-  "price": 42999,
-  "description": "Affordable 4K Android TV",
-  "category": "TV",
-  "stock": 15,
-  "image": "mixseries.jpg"
-},
-{
-  "name": "Whirlpool Refrigerator",
-  "price": 35999,
-  "description": "Double door frost-free refrigerator",
-  "category": "Refrigerator",
-  "stock": 12,
-  "image": "whirlpoolfridge.jpg"
-},
-{
-  "name": "LG Refrigerator",
-  "price": 38999,
-  "description": "Smart inverter refrigerator",
-  "category": "Refrigerator",
-  "stock": 11,
-  "image": "lgfridge.jpg"
-},
-{
-  "name": "Samsung Refrigerator",
-  "price": 40999,
-  "description": "Convertible double-door refrigerator",
-  "category": "Refrigerator",
-  "stock": 10,
-  "image": "samsungfridge.jpg"
-},
-{
-  "name": "Haier Refrigerator",
-  "price": 32999,
-  "description": "Energy efficient refrigerator",
-  "category": "Refrigerator",
-  "stock": 13,
-  "image": "haierfridge.jpg"
-},
-{
-  "name": "Godrej Refrigerator",
-  "price": 29999,
-  "description": "Direct cool refrigerator",
-  "category": "Refrigerator",
-  "stock": 14,
-  "image": "godrejfridge.jpg"
-},
-{
-  "name": "LG Front Load Washing Machine",
-  "price": 42999,
-  "description": "8kg Fully Automatic Front Load",
-  "category": "Washing Machine",
-  "stock": 10,
-  "image": "lgwm.jpg"
-},
-{
-  "name": "Samsung Washing Machine",
-  "price": 38999,
-  "description": "7kg Fully Automatic Washing Machine",
-  "category": "Washing Machine",
-  "stock": 12,
-  "image": "samsungwm.jpg"
-},
-{
-  "name": "IFB Washing Machine",
-  "price": 36999,
-  "description": "6.5kg Front Load Washing Machine",
-  "category": "Washing Machine",
-  "stock": 9,
-  "image": "ifbwm.jpg"
-},
-{
-  "name": "Voltas 1.5 Ton AC",
-  "price": 39999,
-  "description": "Inverter Split Air Conditioner",
-  "category": "Air Conditioner",
-  "stock": 15,
-  "image": "voltasac.jpg"
-},
-{
-  "name": "Daikin 1.5 Ton AC",
-  "price": 45999,
-  "description": "Energy Efficient Inverter AC",
-  "category": "Air Conditioner",
-  "stock": 10,
-  "image": "daikinac.jpg"
-},
-{
-  "name": "LG Dual Inverter AC",
-  "price": 48999,
-  "description": "Fast Cooling Split AC",
-  "category": "Air Conditioner",
-  "stock": 8,
-  "image": "lgac.jpg"
-},
-{
-  "name": "Boat Rockerz 550",
-  "price": 2499,
-  "description": "Wireless Bluetooth Headphones",
-  "category": "Accessories",
-  "stock": 35,
-  "image": "boatheadphones.jpg"
-},
-{
-  "name": "Sony WH-CH520",
-  "price": 4499,
-  "description": "Wireless Bluetooth Headphones",
-  "category": "Accessories",
-  "stock": 20,
-  "image": "sonyheadphones.jpg"
-},
-{
-  "name": "JBL Flip 6",
-  "price": 8999,
-  "description": "Portable Bluetooth Speaker",
-  "category": "Accessories",
-  "stock": 18,
-  "image": "jblspeaker.jpg"
-},
-{
-  "name": "Apple Watch Series 9",
-  "price": 41999,
-  "description": "Premium Apple Smartwatch",
-  "category": "Smartwatch",
-  "stock": 12,
-  "image": "applewatch9.jpg"
-},
-{
-  "name": "Noise ColorFit Pro 5",
-  "price": 4999,
-  "description": "Smartwatch with AMOLED display",
-  "category": "Smartwatch",
-  "stock": 20,
-  "image": "noisecolorfitpro5.jpg"
-},
-{
-  "name": "Canon EOS 1500D",
-  "price": 45999,
-  "description": "24.1MP DSLR Camera",
-  "category": "Camera",
-  "stock": 8,
-  "image": "canon1500d.jpg"
-},
-{
-  "name": "Nikon D5600",
-  "price": 55999,
-  "description": "24.2MP DSLR Camera",
-  "category": "Camera",
-  "stock": 6,
-  "image": "nikond5600.jpg"
-},
-{
-  "name": "Logitech MX Master 3S",
-  "price": 9999,
-  "description": "Wireless Performance Mouse",
-  "category": "Accessories",
-  "stock": 18,
-  "image": "logitechmxmaster3s.jpg"
-},
-{
-  "name": "HP Wireless Keyboard",
-  "price": 2499,
-  "description": "Compact Wireless Keyboard",
-  "category": "Accessories",
-  "stock": 25,
-  "image": "hpkeyboard.jpg"
-}
+    "name": "Acer Aspire 7",
+    "price": 52999,
+    "description": "Gaming laptop with powerful performance",
+    "category": "Laptops",
+    "stock": 10,
+    "image": "aceraspire7.jpg",
+    "rating": 4.6
+  },
+  {
+    "name": "LG OLED Smart TV",
+    "price": 89999,
+    "description": "55-inch 4K OLED Smart TV",
+    "category": "TV",
+    "stock": 8,
+    "image": "lgoledtv.jpg",
+    "rating": 4.8
+  },
+  {
+    "name": "Samsung Crystal 4K TV",
+    "price": 64999,
+    "description": "50-inch Crystal UHD Smart TV",
+    "category": "TV",
+    "stock": 9,
+    "image": "samsungtv.jpg",
+    "rating": 4.6
+  },
+  {
+    "name": "Sony Bravia 4K",
+    "price": 79999,
+    "description": "Sony 4K Ultra HD Smart TV",
+    "category": "TV",
+    "stock": 7,
+    "image": "sonybravia.jpg",
+    "rating": 4.9
+  },
+  {
+    "name": "Mi X Series TV",
+    "price": 42999,
+    "description": "Affordable 4K Android TV",
+    "category": "TV",
+    "stock": 15,
+    "image": "mixseries.jpg",
+    "rating": 4.4
+  },
+  {
+    "name": "Whirlpool Refrigerator",
+    "price": 35999,
+    "description": "Double door frost-free refrigerator",
+    "category": "Refrigerator",
+    "stock": 12,
+    "image": "whirlpoolfridge.jpg",
+    "rating": 4.5
+  },
+  {
+    "name": "LG Refrigerator",
+    "price": 38999,
+    "description": "Smart inverter refrigerator",
+    "category": "Refrigerator",
+    "stock": 11,
+    "image": "lgfridge.jpg",
+    "rating": 4.7
+  },
+  {
+    "name": "Samsung Refrigerator",
+    "price": 40999,
+    "description": "Convertible double-door refrigerator",
+    "category": "Refrigerator",
+    "stock": 10,
+    "image": "samsungfridge.jpg",
+    "rating": 4.6
+  },
+  {
+    "name": "Haier Refrigerator",
+    "price": 32999,
+    "description": "Energy efficient refrigerator",
+    "category": "Refrigerator",
+    "stock": 13,
+    "image": "haierfridge.jpg",
+    "rating": 4.4
+  },
+  {
+    "name": "Godrej Refrigerator",
+    "price": 29999,
+    "description": "Direct cool refrigerator",
+    "category": "Refrigerator",
+    "stock": 14,
+    "image": "godrejfridge.jpg",
+    "rating": 4.3
+  },
+  {
+    "name": "LG Front Load Washing Machine",
+    "price": 42999,
+    "description": "8kg Fully Automatic Front Load",
+    "category": "Washing Machine",
+    "stock": 10,
+    "image": "lgwm.jpg",
+    "rating": 4.7
+  },
+  {
+    "name": "Samsung Washing Machine",
+    "price": 38999,
+    "description": "7kg Fully Automatic Washing Machine",
+    "category": "Washing Machine",
+    "stock": 12,
+    "image": "samsungwm.jpg",
+    "rating": 4.6
+  },
+  {
+    "name": "IFB Washing Machine",
+    "price": 36999,
+    "description": "6.5kg Front Load Washing Machine",
+    "category": "Washing Machine",
+    "stock": 9,
+    "image": "ifbwm.jpg",
+    "rating": 4.5
+  },
+  {
+    "name": "Voltas 1.5 Ton AC",
+    "price": 39999,
+    "description": "Inverter Split Air Conditioner",
+    "category": "Air Conditioner",
+    "stock": 15,
+    "image": "voltasac.jpg",
+    "rating": 4.6
+  },
+  {
+    "name": "Daikin 1.5 Ton AC",
+    "price": 45999,
+    "description": "Energy Efficient Inverter AC",
+    "category": "Air Conditioner",
+    "stock": 10,
+    "image": "daikinac.jpg",
+    "rating": 4.8
+  },
+  {
+    "name": "LG Dual Inverter AC",
+    "price": 48999,
+    "description": "Fast Cooling Split AC",
+    "category": "Air Conditioner",
+    "stock": 8,
+    "image": "lgac.jpg",
+    "rating": 4.7
+  },
+  {
+    "name": "Boat Rockerz 550",
+    "price": 2499,
+    "description": "Wireless Bluetooth Headphones",
+    "category": "Accessories",
+    "stock": 35,
+    "image": "boatheadphones.jpg",
+    "rating": 4.5
+  },
+  {
+    "name": "Sony WH-CH520",
+    "price": 4499,
+    "description": "Wireless Bluetooth Headphones",
+    "category": "Accessories",
+    "stock": 20,
+    "image": "sonyheadphones.jpg",
+    "rating": 4.6
+  },
+  {
+    "name": "JBL Flip 6",
+    "price": 8999,
+    "description": "Portable Bluetooth Speaker",
+    "category": "Accessories",
+    "stock": 18,
+    "image": "jblspeaker.jpg",
+    "rating": 4.8
+  },
+  {
+    "name": "Apple Watch Series 9",
+    "price": 41999,
+    "description": "Premium Apple Smartwatch",
+    "category": "Smartwatch",
+    "stock": 12,
+    "image": "applewatch9.jpg",
+    "rating": 4.9
+  },
+  {
+    "name": "Noise ColorFit Pro 5",
+    "price": 4999,
+    "description": "Smartwatch with AMOLED display",
+    "category": "Smartwatch",
+    "stock": 20,
+    "image": "noisecolorfitpro5.jpg",
+    "rating": 4.4
+  },
+  {
+    "name": "Canon EOS 1500D",
+    "price": 45999,
+    "description": "24.1MP DSLR Camera",
+    "category": "Camera",
+    "stock": 8,
+    "image": "canon1500d.jpg",
+    "rating": 4.7
+  },
+  {
+    "name": "Nikon D5600",
+    "price": 55999,
+    "description": "24.2MP DSLR Camera",
+    "category": "Camera",
+    "stock": 6,
+    "image": "nikond5600.jpg",
+    "rating": 4.8
+  },
+  {
+    "name": "Logitech MX Master 3S",
+    "price": 9999,
+    "description": "Wireless Performance Mouse",
+    "category": "Accessories",
+    "stock": 18,
+    "image": "logitechmxmaster3s.jpg",
+    "rating": 4.7
+  },
+  {
+    "name": "HP Wireless Keyboard",
+    "price": 2499,
+    "description": "Compact Wireless Keyboard",
+    "category": "Accessories",
+    "stock": 25,
+    "image": "hpkeyboard.jpg",
+    "rating": 4.5
+  }
 ]
