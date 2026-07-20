@@ -1,4 +1,5 @@
 const Product = require("../models/Product");
+const mongoose = require("mongoose");
 
 const addProduct = async (req, res) => {
   try {
@@ -17,9 +18,17 @@ const addProduct = async (req, res) => {
   }
 };
 
+
 const getProducts = async (req, res) => {
   try {
     const products = await Product.find();
+
+    console.log("Database:", mongoose.connection.name);
+    console.log("Products Count:", products.length);
+    console.log(
+      "Products:",
+      products.map((p) => p.name)
+    );
 
     res.status(200).json({
       success: true,
@@ -33,7 +42,6 @@ const getProducts = async (req, res) => {
     });
   }
 };
-
 const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -86,6 +94,7 @@ const updateProduct = async (req, res) => {
     });
   }
 };
+
 
 module.exports = {
   addProduct,

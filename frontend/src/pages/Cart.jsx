@@ -11,59 +11,37 @@ function Cart() {
     getCart();
   }, []);
 
-  // Get Cart
   const getCart = async () => {
-    try {
-      const token = localStorage.getItem("token");
-
-      const res = await API.get("/cart", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      setCart(res.data.cart);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  try {
+    const res = await API.get("/cart");
+    setCart(res.data.cart);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   const removeItem = async (id) => {
-    try {
-      const token = localStorage.getItem("token");
-
-      await API.delete(`/cart/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      getCart();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  try {
+    await API.delete(`/cart/${id}`);
+    getCart();
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 
-  const updateQuantity = async (id, quantity) => {
-    try {
-      const token = localStorage.getItem("token");
+ const updateQuantity = async (id, quantity) => {
+  try {
+    await API.put(`/cart/${id}`, {
+      quantity,
+    });
 
-      await API.put(
-        `/cart/${id}`,
-        { quantity },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    getCart();
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-      getCart();
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const increaseQuantity = (item) => {
     updateQuantity(item._id, item.quantity + 1);
   };
@@ -135,7 +113,7 @@ function Cart() {
                   }}
                 >
                   <img
-                    src={item.product.image}
+                    src={`http://localhost:5000/uploads/${item.product.image}`}
                     alt={item.product.name}
                     style={{
                       width: "180px",
@@ -149,66 +127,179 @@ function Cart() {
                       flex: 1,
                     }}
                   >
-                    <h2>{item.product.name}</h2>
+                    <h2
+  style={{
+    fontSize: "24px",
+    marginBottom: "10px",
+  }}
+>
+  {item.product.name}
+</h2>
 
-                    <p
-                      style={{
-                        color: "#555",
-                        fontSize: "18px",
-                        margin: "10px 0",
-                      }}
-                    >
-                      ₹ {item.product.price}
-                    </p>
+<p
+  style={{
+    color: "#666",
+    marginBottom: "10px",
+    fontSize: "15px",
+  }}
+>
+  {item.product.description}
+</p>
 
-                    <h4
-                      style={{
-                        marginBottom: "10px",
-                      }}
-                    >
-                      Quantity
-                    </h4>
+<p
+  style={{
+    color: "#f5a623",
+    fontWeight: "bold",
+    marginBottom: "10px",
+  }}
+>
+  ⭐ {item.product.rating}
+</p>
 
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "15px",
-                      }}
-                    >
-                      <button
-                        onClick={() => decreaseQuantity(item)}
-                        style={{
-                          width: "40px",
-                          height: "40px",
-                          border: "none",
-                          background: "#ddd",
-                          cursor: "pointer",
-                          fontSize: "20px",
-                          borderRadius: "5px",
-                        }}
-                      >
-                        -
-                      </button>
+<h2
+  style={{
+    color: "#00b894",
+    marginBottom: "5px",
+  }}
+>
+  ₹ {item.product.price.toLocaleString()}
+</h2>
 
-                      <h3>{item.quantity}</h3>
+<p
+  style={{
+    textDecoration: "line-through",
+    color: "#777",
+  }}
+>
+  MRP ₹ {(item.product.price + 5000).toLocaleString()}
+</p>
 
-                      <button
-                        onClick={() => increaseQuantity(item)}
-                        style={{
-                          width: "40px",
-                          height: "40px",
-                          border: "none",
-                          background: "#00bcd4",
-                          color: "#fff",
-                          cursor: "pointer",
-                          fontSize: "20px",
-                          borderRadius: "5px",
-                        }}
-                      >
-                        +
-                      </button>
-                    </div>
+<p
+  style={{
+    color: "green",
+    fontWeight: "bold",
+    marginBottom: "15px",
+  }}
+>
+  Save ₹5,000
+</p>
+
+<p
+  style={{
+    color: "#444",
+    marginBottom: "20px",
+  }}
+>
+  🚚 Delivery by <b>25 July</b>
+</p>
+
+<h4
+  style={{
+    marginBottom: "10px",
+  }}
+>
+  Quantity
+</h4>
+
+<div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+  }}
+>
+  <button
+    onClick={() => decreaseQuantity(item)}
+    style={{
+      width: "35px",
+      height: "35px",
+      borderRadius: "50%",
+      border: "1px solid #ccc",
+      background: "#fff",
+      cursor: "pointer",
+      fontSize: "20px",
+    }}
+  >
+    -
+  </button>
+
+  <span
+    style={{
+      fontSize: "20px",
+      fontWeight: "bold",
+      minWidth: "20px",
+      textAlign: "center",
+    }}
+  >
+    {item.quantity}
+  </span>
+
+  <button
+    onClick={() => increaseQuantity(item)}
+    style={{
+      width: "35px",
+      height: "35px",
+      borderRadius: "50%",
+      border: "none",
+      background: "#00c7a5",
+      color: "#fff",
+      cursor: "pointer",
+      fontSize: "20px",
+    }}
+  >
+    +
+  </button>
+</div>
+
+<div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+  }}
+>
+  <button
+    onClick={() => decreaseQuantity(item)}
+    style={{
+      width: "35px",
+      height: "35px",
+      borderRadius: "50%",
+      border: "1px solid #ccc",
+      background: "#fff",
+      cursor: "pointer",
+      fontSize: "20px",
+    }}
+  >
+    -
+  </button>
+
+  <span
+    style={{
+      fontSize: "20px",
+      fontWeight: "bold",
+      minWidth: "20px",
+      textAlign: "center",
+    }}
+  >
+    {item.quantity}
+  </span>
+
+  <button
+    onClick={() => increaseQuantity(item)}
+    style={{
+      width: "35px",
+      height: "35px",
+      borderRadius: "50%",
+      border: "none",
+      background: "#00c7a5",
+      color: "#fff",
+      cursor: "pointer",
+      fontSize: "20px",
+    }}
+  >
+    +
+  </button>
+</div>
                   </div>
                 </div>
 
@@ -252,7 +343,7 @@ function Cart() {
                   marginBottom: "20px",
                 }}
               >
-                Total : ₹ {totalPrice}
+                Grand Total : ₹ {totalPrice.toLocaleString()}
               </h2>
 
               <button

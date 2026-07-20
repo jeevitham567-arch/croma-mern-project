@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "./Hero.css";
 
 function Hero() {
@@ -12,24 +13,34 @@ function Hero() {
           Headphones and Home Appliances at the best prices.
         </p>
 
-        <button>Shop Now</button>
+        <Link to="/products">
+          <button>Shop Now</button>
+        </Link>
       </div>
 
       <div className="hero-right">
-        <img
-          src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500"
-          alt="Mobile"
-        />
 
-        <img
-          src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500"
-          alt="Laptop"
-        />
+        <Link to="/category/Mobiles">
+          <img
+            src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500"
+            alt="Mobile"
+          />
+        </Link>
 
-        <img
-          src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"
-          alt="Headphone"
-        />
+        <Link to="/category/Laptops">
+          <img
+            src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500"
+            alt="Laptop"
+          />
+        </Link>
+
+        <Link to="/category/Accessories">
+          <img
+            src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500"
+            alt="Headphone"
+          />
+        </Link>
+
       </div>
 
     </section>
@@ -37,3 +48,4 @@ function Hero() {
 }
 
 export default Hero;
+

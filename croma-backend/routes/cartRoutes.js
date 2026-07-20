@@ -10,12 +10,9 @@ const {
 
 const verifyToken = require("../middleware/authMiddleware");
 
-router.post("/", verifyToken, addToCart);
-
-router.get("/", verifyToken, getCart);
-
-router.put("/:id", verifyToken, updateCart);
-
-router.delete("/:id", verifyToken, removeCart);
+router.post("/", addToCart);
+router.get("/", getCart);
+router.put("/:id", updateCart);
+router.delete("/:id", removeCart);
 
 module.exports = router;

@@ -1,113 +1,85 @@
-const Cart = require("../models/cart");
+const Cart = require("../models/Cart");
+
 const addToCart = async (req, res) => {
   try {
-    const { product, quantity } = req.body;
+    const { productId } = req.body;
 
-  
-    const existingCart = await Cart.findOne({
-      user: req.user.id,
-      product,
+    let item = await Cart.findOne({
+      product: productId,
     });
 
-    if (existingCart) {
-      existingCart.quantity += quantity;
-
-      await existingCart.save();
-
-      return res.status(200).json({
-        success: true,
-        message: "Cart Updated",
-        cart: existingCart,
+    if (item) {
+      item.quantity += 1;
+      await item.save();
+    } else {
+      item = await Cart.create({
+        product: productId,
       });
     }
 
-    // Create new cart item
-    const cart = await Cart.create({
-      user: req.user.id,
-      product,
-      quantity,
-    });
-
-    res.status(201).json({
+    res.json({
       success: true,
       message: "Product Added To Cart",
-      cart,
     });
-
-  } catch (error) {
+  } catch (err) {
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: err.message,
     });
   }
 };
 
 const getCart = async (req, res) => {
   try {
-    const cart = await Cart.find({
-      user: req.user.id,
-    }).populate("product");
+    const cart = await Cart.find().populate("product");
 
-    res.status(200).json({
+    res.json({
       success: true,
-      count: cart.length,
       cart,
     });
-
-  } catch (error) {
+  } catch (err) {
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: err.message,
     });
   }
 };
 
 const updateCart = async (req, res) => {
   try {
+    const { quantity } = req.body;
 
     const cart = await Cart.findByIdAndUpdate(
       req.params.id,
-      {
-        quantity: req.body.quantity,
-      },
-      {
-        new: true,
-      }
+      { quantity },
+      { new: true }
     );
 
-    res.status(200).json({
+    res.json({
       success: true,
-      message: "Cart Updated",
       cart,
     });
-
-  } catch (error) {
-
+  } catch (err) {
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: err.message,
     });
-
   }
 };
 
 const removeCart = async (req, res) => {
   try {
-
     await Cart.findByIdAndDelete(req.params.id);
 
-    res.status(200).json({
+    res.json({
       success: true,
-      message: "Product Removed From Cart",
+      message: "Item Removed",
     });
-
-  } catch (error) {
-
+  } catch (err) {
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: err.message,
     });
-
   }
 };
 

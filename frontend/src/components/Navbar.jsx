@@ -83,8 +83,8 @@ function Navbar({ search, setSearch }) {
             Register
           </Link>
 
-          <Link to="/cart" style={{ color: "white", textDecoration: "none" }}>
-            Cart
+          <Link to="/cart">
+            🛒
           </Link>
         </div>
       </nav>

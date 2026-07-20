@@ -8,6 +8,7 @@ import Orders from "./pages/Orders";
 import ProductDetails from "./pages/ProductDetails";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
+import CategoryProducts from "./pages/CategoryProducts";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/category/:category" element={<CategoryProducts />} />
       </Routes>
     </BrowserRouter>
   );
