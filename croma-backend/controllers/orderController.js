@@ -1,63 +1,81 @@
-const Order = require("../models/order");
+const Order = require("../models/Order");
+const Cart = require("../models/Cart");
 
 const placeOrder = async (req, res) => {
   try {
+    const {
+      name,
+      phone,
+      address,
+      city,
+      state,
+      pincode,
+    } = req.body;
+
+    const cart = await Cart.find().populate("product");
+
+    if (cart.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Cart is empty",
+      });
+    }
+
+    const items = cart.map((item) => ({
+      product: item.product._id,
+      quantity: item.quantity,
+    }));
+
+    const totalAmount = cart.reduce(
+      (total, item) => total + item.product.price * item.quantity,
+      0
+    );
+
     const order = await Order.create({
       user: req.user.id,
-      products: req.body.products,
-      totalAmount: req.body.totalAmount,
+      items,
+      totalAmount,
+      address: {
+        name,
+        phone,
+        address,
+        city,
+        state,
+        pincode,
+      },
     });
+
+
+    await Cart.deleteMany();
 
     res.status(201).json({
       success: true,
       message: "Order Placed Successfully",
       order,
     });
-  } catch (error) {
+  } catch (err) {
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: err.message,
     });
   }
 };
+
 
 const getOrders = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user.id })
-      .populate("products.product");
+      .populate("items.product")
+      .sort({ createdAt: -1 });
 
-    res.status(200).json({
+    res.json({
       success: true,
-      count: orders.length,
       orders,
     });
-  } catch (error) {
+  } catch (err) {
     res.status(500).json({
       success: false,
-      message: error.message,
-    });
-  }
-};
-
-const updateOrder = async (req, res) => {
-  try {
-    const order = await Order.findByIdAndUpdate(
-      req.params.id,
-      {
-        status: req.body.status,
-      },
-      { new: true }
-    );
-
-    res.status(200).json({
-      success: true,
-      message: "Order Updated Successfully",
-      order,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
+      message: err.message,
     });
   }
 };
@@ -65,5 +83,4 @@ const updateOrder = async (req, res) => {
 module.exports = {
   placeOrder,
   getOrders,
-  updateOrder,
 };

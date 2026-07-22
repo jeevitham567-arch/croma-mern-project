@@ -5,15 +5,12 @@ const orderSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
-
-    products: [
+    items: [
       {
         product: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Product",
-          required: true,
         },
         quantity: {
           type: Number,
@@ -21,15 +18,20 @@ const orderSchema = new mongoose.Schema(
         },
       },
     ],
-
     totalAmount: {
       type: Number,
       required: true,
     },
-
+    address: {
+      name: String,
+      phone: String,
+      address: String,
+      city: String,
+      state: String,
+      pincode: String,
+    },
     status: {
       type: String,
-      enum: ["Pending", "Processing", "Shipped", "Delivered"],
       default: "Pending",
     },
   },

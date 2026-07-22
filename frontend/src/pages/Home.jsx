@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import API from "../services/api";
 
 import Navbar from "../components/Navbar";
@@ -11,6 +11,8 @@ function Home() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
+
+  const productsRef = useRef(null);
 
   useEffect(() => {
     getProducts();
@@ -25,7 +27,6 @@ function Home() {
     }
   };
 
-  // Search + Category Filter
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name
       .toLowerCase()
@@ -45,8 +46,10 @@ function Home() {
         setSearch={setSearch}
       />
 
-      {search === "" && <Hero />}
+      {/* Banner */}
+      {search === "" && <Hero productsRef={productsRef} />}
 
+      {/* Categories */}
       {search === "" && (
         <Categories
           selectedCategory={selectedCategory}
@@ -54,7 +57,11 @@ function Home() {
         />
       )}
 
-      <div style={{ padding: "40px" }}>
+      {/* Products Section */}
+      <div
+        ref={productsRef}
+        style={{ padding: "40px" }}
+      >
         <h2
           style={{
             textAlign: "center",

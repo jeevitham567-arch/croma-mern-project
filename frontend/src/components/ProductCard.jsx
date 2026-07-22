@@ -2,7 +2,10 @@ import { Link } from "react-router-dom";
 import API from "../services/api";
 
 function ProductCard({ product }) {
+
   const addToCart = async (id) => {
+    console.log("Product ID:", id);
+
     try {
       await API.post("/cart", {
         productId: id,
@@ -11,6 +14,7 @@ function ProductCard({ product }) {
       alert("Product Added To Cart");
     } catch (error) {
       console.log(error);
+      console.log(error.response?.data);
       alert("Unable to add product to cart");
     }
   };
@@ -41,9 +45,7 @@ function ProductCard({ product }) {
       </Link>
 
       <h3>{product.name}</h3>
-
       <p>{product.description}</p>
-
       <h2 style={{ color: "green" }}>₹ {product.price}</h2>
 
       <p style={{ color: "#f59e0b", fontWeight: "bold" }}>
