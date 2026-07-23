@@ -1,5 +1,10 @@
 import { Link } from "react-router-dom";
-import { FaBars } from "react-icons/fa";
+import {
+  FaBars,
+  FaHeart,
+  FaShoppingCart,
+  FaUserCircle,
+} from "react-icons/fa";
 import { useState } from "react";
 import logo from "../assets/Croma_Logo_acrkvn.svg";
 
@@ -17,6 +22,9 @@ function Navbar({ search, setSearch }) {
           padding: "15px 40px",
           background: "#1a1a1a",
           color: "white",
+          position: "sticky",
+          top: 0,
+          zIndex: 1000,
         }}
       >
         {/* Menu + Logo */}
@@ -28,7 +36,7 @@ function Navbar({ search, setSearch }) {
           }}
         >
           <FaBars
-            size={25}
+            size={24}
             style={{ cursor: "pointer" }}
             onClick={() => setMenuOpen(!menuOpen)}
           />
@@ -53,107 +61,176 @@ function Navbar({ search, setSearch }) {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           style={{
-            width: "400px",
-            padding: "10px",
-            borderRadius: "8px",
+            width: "500px",
+            padding: "12px 18px",
+            borderRadius: "30px",
             border: "none",
             outline: "none",
+            fontSize: "15px",
+            background: "#fff",
           }}
         />
 
-        {/* Links */}
+        {/* Right Icons */}
         <div
           style={{
             display: "flex",
-            gap: "20px",
+            alignItems: "center",
+            gap: "25px",
           }}
         >
-          <Link to="/" style={{ color: "white", textDecoration: "none" }}>
-            Home
-          </Link>
-
-          <Link to="/login" style={{ color: "white", textDecoration: "none" }}>
-            Login
+          <Link
+            to="/wishlist"
+            style={{ color: "#fff", fontSize: "22px" }}
+          >
+            <FaHeart />
           </Link>
 
           <Link
-            to="/register"
-            style={{ color: "white", textDecoration: "none" }}
+            to="/cart"
+            style={{ color: "#fff", fontSize: "22px" }}
           >
-            Register
+            <FaShoppingCart />
           </Link>
 
-          <Link to="/cart">
-            🛒
+          <Link
+            to="/orders"
+            style={{
+              color: "#fff",
+              textDecoration: "none",
+            }}
+          >
+            Orders
+          </Link>
+
+          <Link
+            to="/profile"
+            style={{ color: "#fff", fontSize: "24px" }}
+          >
+            <FaUserCircle />
+          </Link>
+
+          <Link
+            to="/login"
+            style={{
+              color: "#fff",
+              textDecoration: "none",
+            }}
+          >
+            Login
           </Link>
         </div>
       </nav>
-
-      {/* Sidebar */}
+            {/* Sidebar */}
       {menuOpen && (
         <div
           style={{
             position: "fixed",
             top: 0,
             left: 0,
-            width: "280px",
+            width: "300px",
             height: "100vh",
-            background: "#222",
-            color: "white",
-            padding: "20px",
-            zIndex: 1000,
+            background: "#1f1f1f",
+            color: "#fff",
+            padding: "25px",
+            zIndex: 2000,
+            boxShadow: "5px 0 20px rgba(0,0,0,.4)",
           }}
         >
-          <h2>Menu</h2>
-          <hr />
+          <h2
+            style={{
+              marginBottom: "20px",
+              color: "#00c8c8",
+            }}
+          >
+            ☰ Shop by Category
+          </h2>
 
-         <Link to="/category/mobiles">📱 Mobiles</Link>
-<br />
+          <hr
+            style={{
+              border: "1px solid #444",
+              marginBottom: "20px",
+            }}
+          />
 
-<Link to="/category/laptops">💻 Laptops</Link>
-<br />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "15px",
+            }}
+          >
+            <Link style={linkStyle} to="/category/mobiles">
+              📱 Mobiles
+            </Link>
 
-<Link to="/category/televisions">📺 Televisions</Link>
-<br />
+            <Link style={linkStyle} to="/category/laptops">
+              💻 Laptops
+            </Link>
 
-<Link to="/category/refrigerators">🧊 Refrigerators</Link>
-<br />
+            <Link style={linkStyle} to="/category/televisions">
+              📺 Televisions
+            </Link>
 
-<Link to="/category/washing-machines">🧺 Washing Machines</Link>
-<br />
+            <Link style={linkStyle} to="/category/refrigerators">
+              🧊 Refrigerators
+            </Link>
 
-<Link to="/category/air-conditioners">❄️ Air Conditioners</Link>
-<br />
+            <Link style={linkStyle} to="/category/washing-machines">
+              🧺 Washing Machines
+            </Link>
 
-<Link to="/category/audio">🎧 Audio</Link>
-<br />
+            <Link style={linkStyle} to="/category/air-conditioners">
+              ❄️ Air Conditioners
+            </Link>
 
-<Link to="/category/smart-watches">⌚ Smart Watches</Link>
-<br />
+            <Link style={linkStyle} to="/category/audio">
+              🎧 Audio
+            </Link>
 
-<Link to="/category/cameras">📷 Cameras</Link>
-<br />
+            <Link style={linkStyle} to="/category/smart-watches">
+              ⌚ Smart Watches
+            </Link>
 
-<Link to="/category/gaming">🎮 Gaming</Link>
+            <Link style={linkStyle} to="/category/cameras">
+              📷 Cameras
+            </Link>
+
+            <Link style={linkStyle} to="/category/gaming">
+              🎮 Gaming
+            </Link>
+          </div>
 
           <button
             onClick={() => setMenuOpen(false)}
             style={{
-              marginTop: "20px",
-              padding: "10px",
+              marginTop: "35px",
               width: "100%",
-              background: "#00C8C8",
+              padding: "14px",
               border: "none",
+              borderRadius: "8px",
+              background: "#00c8c8",
+              color: "#fff",
               cursor: "pointer",
-              borderRadius: "5px",
+              fontWeight: "bold",
+              fontSize: "16px",
             }}
           >
-            Close
+            Close Menu
           </button>
         </div>
       )}
     </>
   );
 }
+
+const linkStyle = {
+  color: "#fff",
+  textDecoration: "none",
+  fontSize: "17px",
+  padding: "10px",
+  borderRadius: "8px",
+  background: "#2d2d2d",
+};
 
 export default Navbar;

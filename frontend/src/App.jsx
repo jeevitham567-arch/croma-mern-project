@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import CategoryProducts from "./pages/CategoryProducts";
 import Checkout from "./pages/Checkout";
+import Wishlist from "./pages/Wishlist";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/category/:category" element={<CategoryProducts />} />
         <Route path="*" element={<NotFound />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/wishlist" element={<Wishlist />} />
       </Routes>
     </BrowserRouter>
   );

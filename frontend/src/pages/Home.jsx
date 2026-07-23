@@ -46,10 +46,25 @@ function Home() {
         setSearch={setSearch}
       />
 
-      {/* Banner */}
-      {search === "" && <Hero productsRef={productsRef} />}
+      {search === "" && (
+        <Hero productsRef={productsRef} />
+      )}
 
-      {/* Categories */}
+      {search === "" && (
+        <div
+          style={{
+            background: "#00c8c8",
+            color: "#fff",
+            textAlign: "center",
+            padding: "15px",
+            fontWeight: "bold",
+            fontSize: "18px",
+          }}
+        >
+          🎉 Independence Sale | Up to 70% OFF | Free Delivery | No Cost EMI
+        </div>
+      )}
+
       {search === "" && (
         <Categories
           selectedCategory={selectedCategory}
@@ -57,28 +72,44 @@ function Home() {
         />
       )}
 
-      {/* Products Section */}
       <div
         ref={productsRef}
-        style={{ padding: "40px" }}
+        style={{
+          padding: "50px 40px",
+          background: "#f7f7f7",
+        }}
       >
         <h2
           style={{
             textAlign: "center",
-            marginBottom: "30px",
+            fontSize: "34px",
+            color: "#222",
+            marginBottom: "10px",
           }}
         >
-          {search ? "Search Results" : "Latest Products"}
+          🔥 Trending Products
         </h2>
+
+        <p
+          style={{
+            textAlign: "center",
+            color: "#777",
+            marginBottom: "40px",
+            fontSize: "17px",
+          }}
+        >
+          Grab the best deals on today's top electronics.
+        </p>
 
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-            gap: "20px",
+            gridTemplateColumns:
+              "repeat(auto-fit,minmax(280px,1fr))",
+            gap: "30px",
           }}
-        >
-          {filteredProducts.length > 0 ? (
+        ></div>
+                 {filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
               <ProductCard
                 key={product._id}
@@ -89,8 +120,8 @@ function Home() {
             <h2
               style={{
                 textAlign: "center",
-                width: "100%",
                 color: "gray",
+                width: "100%",
               }}
             >
               No products found.
@@ -99,9 +130,102 @@ function Home() {
         </div>
       </div>
 
-      <Footer />
+      {/* Featured Brands */}
+      <div
+        style={{
+          padding: "60px 40px",
+          background: "#fff",
+        }}
+      >
+        <h2
+          style={{
+            textAlign: "center",
+            fontSize: "32px",
+            marginBottom: "40px",
+          }}
+        >
+          ⭐ Featured Brands
+        </h2>
+
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-evenly",
+            flexWrap: "wrap",
+            gap: "25px",
+          }}
+        >
+          <div style={brandStyle}>🍎 Apple</div>
+          <div style={brandStyle}>📱 Samsung</div>
+          <div style={brandStyle}>💻 HP</div>
+          <div style={brandStyle}>🎧 Sony</div>
+          <div style={brandStyle}>🖥️ Dell</div>
+          <div style={brandStyle}>📺 LG</div>
+        </div>
+      </div>
+
+      {/* Newsletter */}
+      <div
+        style={{
+          background: "#1a1a1a",
+          color: "#fff",
+          textAlign: "center",
+          padding: "60px 20px",
+        }}
+      >
+        <h2>Stay Updated</h2>
+
+        <p
+          style={{
+            color: "#ccc",
+            marginTop: "10px",
+            marginBottom: "25px",
+          }}
+        >
+          Subscribe to get the latest offers and product updates.
+        </p>
+
+        <input
+          type="email"
+          placeholder="Enter your email"
+          style={{
+            width: "350px",
+            padding: "14px",
+            borderRadius: "30px",
+            border: "none",
+            outline: "none",
+            marginRight: "10px",
+          }}
+        />
+
+        <button
+          style={{
+            padding: "14px 30px",
+            background: "#00c8c8",
+            color: "#fff",
+            border: "none",
+            borderRadius: "30px",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
+        >
+          Subscribe
+        </button>
+      </div> 
+            <Footer />
     </>
   );
 }
+
+const brandStyle = {
+  background: "#f5f5f5",
+  padding: "25px 40px",
+  borderRadius: "12px",
+  fontSize: "22px",
+  fontWeight: "bold",
+  textAlign: "center",
+  cursor: "pointer",
+  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+};
 
 export default Home;
