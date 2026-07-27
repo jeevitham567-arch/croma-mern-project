@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import API from "../services/api";
 
 function Profile() {
   const [user, setUser] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     getProfile();
@@ -21,7 +23,8 @@ function Profile() {
 
   const logout = () => {
     localStorage.removeItem("token");
-    window.location.href = "/login";
+    localStorage.removeItem("user");
+    navigate("/login");
   };
 
   return (
@@ -40,11 +43,12 @@ function Profile() {
             maxWidth: "700px",
             margin: "auto",
             background: "#fff",
-            padding: "30px",
+            padding: "35px",
             borderRadius: "12px",
-            boxShadow: "0 2px 10px rgba(0,0,0,.1)",
+            boxShadow: "0 3px 12px rgba(0,0,0,.1)",
           }}
         >
+          {/* Profile Image */}
           <div
             style={{
               textAlign: "center",
@@ -55,13 +59,17 @@ function Profile() {
               alt="User"
               style={{
                 width: "120px",
+                height: "120px",
+                borderRadius: "50%",
                 marginBottom: "20px",
               }}
             />
 
             <h2>{user.name}</h2>
 
-            <p>{user.email}</p>
+            <p style={{ color: "gray" }}>
+              {user.email}
+            </p>
           </div>
 
           <hr style={{ margin: "25px 0" }} />
@@ -80,10 +88,57 @@ function Profile() {
             <b>Phone:</b> {user.phone || "Not Added"}
           </p>
 
+          <p>
+            <b>Role:</b> {user.role}
+          </p>
+
+          {/* Buttons */}
+          <div
+            style={{
+              display: "flex",
+              gap: "15px",
+              marginTop: "30px",
+            }}
+          >
+            <button
+              onClick={() => navigate("/edit-profile")}
+              style={{
+                flex: 1,
+                padding: "14px",
+                background: "#00bcd4",
+                color: "#fff",
+                border: "none",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontSize: "15px",
+                fontWeight: "bold",
+              }}
+            >
+              Edit Profile
+            </button>
+
+            <button
+              onClick={() => navigate("/change-password")}
+              style={{
+                flex: 1,
+                padding: "14px",
+                background: "#ffa000",
+                color: "#fff",
+                border: "none",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontSize: "15px",
+                fontWeight: "bold",
+              }}
+            >
+              Change Password
+            </button>
+          </div>
+
           <button
             onClick={logout}
             style={{
-              marginTop: "30px",
+              marginTop: "20px",
               width: "100%",
               padding: "15px",
               background: "#ff4d4f",

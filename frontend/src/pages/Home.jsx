@@ -102,32 +102,31 @@ function Home() {
         </p>
 
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns:
-              "repeat(auto-fit,minmax(280px,1fr))",
-            gap: "30px",
-          }}
-        ></div>
-                 {filteredProducts.length > 0 ? (
-            filteredProducts.map((product) => (
-              <ProductCard
-                key={product._id}
-                product={product}
-              />
-            ))
-          ) : (
-            <h2
-              style={{
-                textAlign: "center",
-                color: "gray",
-                width: "100%",
-              }}
-            >
-              No products found.
-            </h2>
-          )}
-        </div>
+  style={{
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))",
+    gap: "30px",
+  }}
+>
+  {filteredProducts.length > 0 ? (
+    filteredProducts.map((product) => (
+      <ProductCard
+        key={product._id}
+        product={product}
+      />
+    ))
+  ) : (
+    <h2
+      style={{
+        textAlign: "center",
+        color: "gray",
+        width: "100%",
+      }}
+    >
+      No products found.
+    </h2>
+  )}
+</div>
       </div>
 
       {/* Featured Brands */}
