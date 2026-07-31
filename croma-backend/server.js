@@ -1,6 +1,9 @@
+const dotenv = require("dotenv");
+
+dotenv.config();
+
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv");
 const path = require("path");
 const connectDB = require("./config/db");
 
@@ -14,7 +17,11 @@ const reviewRoutes = require("./routes/reviewRoutes");
 const wishlistRoutes = require("./routes/wishlistRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
 
-dotenv.config();
+console.log("RAZORPAY KEY ID:", process.env.RAZORPAY_KEY_ID);
+console.log(
+  "RAZORPAY SECRET EXISTS:",
+  !!process.env.RAZORPAY_KEY_SECRET
+);
 
 connectDB();
 

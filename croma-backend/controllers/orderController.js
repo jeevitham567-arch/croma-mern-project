@@ -1,86 +1,126 @@
 const Order = require("../models/Order");
-const Cart = require("../models/Cart");
+const crypto = require("crypto");
+const razorpay = require("../config/razorpay");
 
-const placeOrder = async (req, res) => {
+exports.placeOrder = async (req, res) => {
   try {
-    const {
-      name,
-      phone,
-      address,
-      city,
-      state,
-      pincode,
-    } = req.body;
-
-    const cart = await Cart.find().populate("product");
-
-    if (cart.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Cart is empty",
-      });
-    }
-
-    const items = cart.map((item) => ({
-      product: item.product._id,
-      quantity: item.quantity,
-    }));
-
-    const totalAmount = cart.reduce(
-      (total, item) => total + item.product.price * item.quantity,
-      0
-    );
+    const { items, totalAmount, address } = req.body;
 
     const order = await Order.create({
       user: req.user.id,
       items,
       totalAmount,
-      address: {
-        name,
-        phone,
-        address,
-        city,
-        state,
-        pincode,
-      },
+      address,
+      status: "Pending",
     });
-
-
-    await Cart.deleteMany();
 
     res.status(201).json({
       success: true,
-      message: "Order Placed Successfully",
+      message: "Order placed successfully",
       order,
     });
-  } catch (err) {
+  } catch (error) {
+    console.error(error);
+
     res.status(500).json({
       success: false,
-      message: err.message,
+      message: "Failed to place order",
     });
   }
 };
 
 
-const getOrders = async (req, res) => {
+exports.getOrders = async (req, res) => {
   try {
     const orders = await Order.find({ user: req.user.id })
       .populate("items.product")
       .sort({ createdAt: -1 });
 
-    res.json({
+    res.status(200).json({
       success: true,
       orders,
     });
-  } catch (err) {
+  } catch (error) {
+    console.error(error);
+
     res.status(500).json({
       success: false,
-      message: err.message,
+      message: "Failed to fetch orders",
     });
   }
 };
 
-module.exports = {
-  placeOrder,
-  getOrders,
+exports.createOrder = async (req, res) => {
+  try {
+    const { amount } = req.body;
+
+    if (!amount) {
+      return res.status(400).json({
+        success: false,
+        message: "Amount is required",
+      });
+    }
+
+    const options = {
+      amount: Math.round(Number(amount) * 100),
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`,
+    };
+
+    const razorpayOrder = await razorpay.orders.create(options);
+
+    console.log("Razorpay Order Created:", razorpayOrder.id);
+
+    res.status(200).json({
+      success: true,
+      order: razorpayOrder,
+    });
+  } catch (error) {
+    console.error("Razorpay Create Order Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Unable to create Razorpay order",
+    });
+  }
+};
+
+exports.verifyPayment = async (req, res) => {
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+    } = req.body;
+
+    const generatedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(
+        `${razorpay_order_id}|${razorpay_payment_id}`
+      )
+      .digest("hex");
+
+    if (generatedSignature !== razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment verification failed",
+      });
+    }
+
+    console.log("Payment Verified:", razorpay_payment_id);
+
+    res.status(200).json({
+      success: true,
+      message: "Payment verified successfully",
+      paymentId: razorpay_payment_id,
+      orderId: razorpay_order_id,
+    });
+  } catch (error) {
+    console.error("Payment Verification Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Verification error",
+    });
+  }
 };

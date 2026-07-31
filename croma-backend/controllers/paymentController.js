@@ -1,24 +1,34 @@
 const Payment = require("../models/payment");
+const razorpay = require("../config/razorpay");
 
 const makePayment = async (req, res) => {
   try {
-    const { order, amount, paymentMethod } = req.body;
+    const { order, amount } = req.body;
 
-    const payment = await Payment.create({
-      user: req.user.id,
-      order,
-      amount,
-      paymentMethod,
-      paymentStatus: "Success",
-      transactionId: "TXN" + Date.now(),
-    });
+    if (!order || !amount) {
+      return res.status(400).json({
+        success: false,
+        message: "Order and amount are required",
+      });
+    }
+
+    const options = {
+      amount: Math.round(amount * 100),
+      currency: "INR",
+      receipt: "receipt_" + Date.now(),
+    };
+
+    const razorpayOrder = await razorpay.orders.create(options);
 
     res.status(201).json({
       success: true,
-      message: "Payment Successful",
-      payment,
+      message: "Razorpay order created",
+      razorpayOrder,
+      key: process.env.RAZORPAY_KEY_ID,
     });
   } catch (error) {
+    console.log("Razorpay Error:", error);
+
     res.status(500).json({
       success: false,
       message: error.message,
