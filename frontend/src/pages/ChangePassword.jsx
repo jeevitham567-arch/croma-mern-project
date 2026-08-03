@@ -7,36 +7,66 @@ import API from "../services/api";
 function ChangePassword() {
   const navigate = useNavigate();
 
-  const [passwords, setPasswords] = useState({
+  const [form, setForm] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
-    setPasswords({
-      ...passwords,
+    setForm({
+      ...form,
       [e.target.name]: e.target.value,
     });
   };
 
-  const changePassword = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (passwords.newPassword !== passwords.confirmPassword) {
-      alert("Passwords do not match");
+    if (
+      !form.currentPassword ||
+      !form.newPassword ||
+      !form.confirmPassword
+    ) {
+      alert("Please fill all fields");
+      return;
+    }
+
+    if (form.newPassword.length < 6) {
+      alert("New password must be at least 6 characters");
+      return;
+    }
+
+    if (form.newPassword !== form.confirmPassword) {
+      alert("New password and confirm password do not match");
       return;
     }
 
     try {
-      await API.put("/auth/change-password", passwords);
+      setLoading(true);
 
-      alert("Password Changed Successfully");
+      const res = await API.put("/auth/change-password", {
+        currentPassword: form.currentPassword,
+        newPassword: form.newPassword,
+      });
+
+      alert(
+        res.data.message ||
+          "Password changed successfully"
+      );
 
       navigate("/profile");
     } catch (error) {
-      console.log(error);
-      alert("Unable to change password");
+      console.log("Change Password Error:", error);
+
+      alert(
+        error.response?.data?.message ||
+          "Unable to change password"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,60 +76,119 @@ function ChangePassword() {
 
       <div
         style={{
-          maxWidth: "500px",
-          margin: "40px auto",
-          background: "#fff",
-          padding: "30px",
-          borderRadius: "12px",
-          boxShadow: "0 3px 10px rgba(0,0,0,.1)",
+          background: "#f5f5f5",
+          minHeight: "80vh",
+          padding: "50px 20px",
         }}
       >
-        <h1>Change Password</h1>
-
-        <form onSubmit={changePassword}>
-          <input
-            type="password"
-            name="currentPassword"
-            placeholder="Current Password"
-            value={passwords.currentPassword}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            type="password"
-            name="newPassword"
-            placeholder="New Password"
-            value={passwords.newPassword}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm New Password"
-            value={passwords.confirmPassword}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <button
-            type="submit"
+        <div
+          style={{
+            maxWidth: "600px",
+            margin: "0 auto",
+            background: "#fff",
+            padding: "35px",
+            borderRadius: "14px",
+            boxShadow: "0 3px 12px rgba(0,0,0,0.08)",
+          }}
+        >
+          <h1
             style={{
-              width: "100%",
-              padding: "15px",
-              background: "#00bcd4",
-              color: "#fff",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-              fontWeight: "bold",
+              textAlign: "center",
+              marginBottom: "10px",
             }}
           >
-            Update Password
-          </button>
-        </form>
+            Change Password
+          </h1>
+
+          <p
+            style={{
+              textAlign: "center",
+              color: "#777",
+              marginBottom: "30px",
+            }}
+          >
+            Keep your account secure with a strong password
+          </p>
+
+          <form onSubmit={handleSubmit}>
+            <label>Current Password</label>
+
+            <input
+              type="password"
+              name="currentPassword"
+              value={form.currentPassword}
+              onChange={handleChange}
+              placeholder="Enter current password"
+              style={inputStyle}
+            />
+
+            <label>New Password</label>
+
+            <input
+              type="password"
+              name="newPassword"
+              value={form.newPassword}
+              onChange={handleChange}
+              placeholder="Enter new password"
+              style={inputStyle}
+            />
+
+            <label>Confirm New Password</label>
+
+            <input
+              type="password"
+              name="confirmPassword"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              placeholder="Confirm new password"
+              style={inputStyle}
+            />
+
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                width: "100%",
+                padding: "14px",
+                background: loading
+                  ? "#999"
+                  : "#00bcd4",
+                color: "#fff",
+                border: "none",
+                borderRadius: "8px",
+                cursor: loading
+                  ? "not-allowed"
+                  : "pointer",
+                fontSize: "16px",
+                fontWeight: "bold",
+                marginTop: "10px",
+              }}
+            >
+              {loading
+                ? "Changing Password..."
+                : "Change Password"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => navigate("/profile")}
+              style={{
+                width: "100%",
+                padding: "14px",
+                background: "#eee",
+                color: "#333",
+                border: "none",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontSize: "16px",
+                fontWeight: "bold",
+                marginTop: "12px",
+              }}
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
       </div>
 
       <Footer />
@@ -109,10 +198,12 @@ function ChangePassword() {
 
 const inputStyle = {
   width: "100%",
-  padding: "12px",
-  marginBottom: "15px",
-  border: "1px solid #ccc",
+  padding: "14px",
+  marginTop: "8px",
+  marginBottom: "20px",
   borderRadius: "8px",
+  border: "1px solid #ccc",
+  fontSize: "16px",
   boxSizing: "border-box",
 };
 

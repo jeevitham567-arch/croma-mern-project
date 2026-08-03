@@ -1,11 +1,11 @@
 const jwt = require("jsonwebtoken");
 
-const verifyToken = (req, res, next) => {
+const authMiddleware = (req, res, next) => {
   const authHeader = req.header("Authorization");
 
   if (!authHeader) {
     return res.status(401).json({
-      message: "Access Denied",
+      message: "Access Denied. No token provided.",
     });
   }
 
@@ -14,16 +14,19 @@ const verifyToken = (req, res, next) => {
     : authHeader;
 
   try {
-    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    const verified = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
 
     req.user = verified;
 
     next();
   } catch (error) {
     return res.status(401).json({
-      message: "Invalid Token",
+      message: "Invalid or expired token",
     });
   }
 };
 
-module.exports = verifyToken;
+module.exports = authMiddleware;

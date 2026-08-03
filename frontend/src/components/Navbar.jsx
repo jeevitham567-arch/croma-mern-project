@@ -8,12 +8,13 @@ import {
 import { useState } from "react";
 import logo from "../assets/Croma_Logo_acrkvn.svg";
 
-function Navbar({ search, setSearch }) {
+function Navbar({ search = "", setSearch = () => {} }) {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const user = JSON.parse(localStorage.getItem("user"));
 
   return (
     <>
-      {/* Navbar */}
       <nav
         style={{
           display: "flex",
@@ -25,6 +26,7 @@ function Navbar({ search, setSearch }) {
           position: "sticky",
           top: 0,
           zIndex: 1000,
+          gap: "20px",
         }}
       >
         {/* Menu + Logo */}
@@ -38,7 +40,7 @@ function Navbar({ search, setSearch }) {
           <FaBars
             size={24}
             style={{ cursor: "pointer" }}
-            onClick={() => setMenuOpen(!menuOpen)}
+            onClick={() => setMenuOpen(true)}
           />
 
           <Link to="/">
@@ -62,6 +64,7 @@ function Navbar({ search, setSearch }) {
           onChange={(e) => setSearch(e.target.value)}
           style={{
             width: "500px",
+            maxWidth: "45vw",
             padding: "12px 18px",
             borderRadius: "30px",
             border: "none",
@@ -71,24 +74,30 @@ function Navbar({ search, setSearch }) {
           }}
         />
 
-        {/* Right Icons */}
+        {/* Right Side */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "25px",
+            gap: "22px",
           }}
         >
           <Link
             to="/wishlist"
-            style={{ color: "#fff", fontSize: "22px" }}
+            style={{
+              color: "#fff",
+              fontSize: "22px",
+            }}
           >
             <FaHeart />
           </Link>
 
           <Link
             to="/cart"
-            style={{ color: "#fff", fontSize: "22px" }}
+            style={{
+              color: "#fff",
+              fontSize: "22px",
+            }}
           >
             <FaShoppingCart />
           </Link>
@@ -105,120 +114,191 @@ function Navbar({ search, setSearch }) {
 
           <Link
             to="/profile"
-            style={{ color: "#fff", fontSize: "24px" }}
+            style={{
+              color: "#fff",
+              fontSize: "24px",
+            }}
           >
             <FaUserCircle />
           </Link>
 
-          <Link
-            to="/login"
-            style={{
-              color: "#fff",
-              textDecoration: "none",
-            }}
-          >
-            Login
-          </Link>
+          {!user ? (
+            <Link
+              to="/login"
+              style={{
+                color: "#fff",
+                textDecoration: "none",
+              }}
+            >
+              Login
+            </Link>
+          ) : (
+            <span
+              style={{
+                color: "#00c8c8",
+                fontWeight: "bold",
+              }}
+            >
+              {user.name}
+            </span>
+          )}
         </div>
       </nav>
-            {/* Sidebar */}
-      {menuOpen && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "300px",
-            height: "100vh",
-            background: "#1f1f1f",
-            color: "#fff",
-            padding: "25px",
-            zIndex: 2000,
-            boxShadow: "5px 0 20px rgba(0,0,0,.4)",
-          }}
-        >
-          <h2
-            style={{
-              marginBottom: "20px",
-              color: "#00c8c8",
-            }}
-          >
-            ☰ Shop by Category
-          </h2>
 
-          <hr
+      {/* Sidebar */}
+      {menuOpen && (
+        <>
+          {/* Overlay */}
+          <div
+            onClick={() => setMenuOpen(false)}
             style={{
-              border: "1px solid #444",
-              marginBottom: "20px",
+              position: "fixed",
+              inset: 0,
+              background: "rgba(0,0,0,0.5)",
+              zIndex: 1999,
             }}
           />
 
           <div
             style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "15px",
-            }}
-          >
-            <Link style={linkStyle} to="/category/mobiles">
-              📱 Mobiles
-            </Link>
-
-            <Link style={linkStyle} to="/category/laptops">
-              💻 Laptops
-            </Link>
-
-            <Link style={linkStyle} to="/category/televisions">
-              📺 Televisions
-            </Link>
-
-            <Link style={linkStyle} to="/category/refrigerators">
-              🧊 Refrigerators
-            </Link>
-
-            <Link style={linkStyle} to="/category/washing-machines">
-              🧺 Washing Machines
-            </Link>
-
-            <Link style={linkStyle} to="/category/air-conditioners">
-              ❄️ Air Conditioners
-            </Link>
-
-            <Link style={linkStyle} to="/category/audio">
-              🎧 Audio
-            </Link>
-
-            <Link style={linkStyle} to="/category/smart-watches">
-              ⌚ Smart Watches
-            </Link>
-
-            <Link style={linkStyle} to="/category/cameras">
-              📷 Cameras
-            </Link>
-
-            <Link style={linkStyle} to="/category/gaming">
-              🎮 Gaming
-            </Link>
-          </div>
-
-          <button
-            onClick={() => setMenuOpen(false)}
-            style={{
-              marginTop: "35px",
-              width: "100%",
-              padding: "14px",
-              border: "none",
-              borderRadius: "8px",
-              background: "#00c8c8",
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "300px",
+              maxWidth: "80%",
+              height: "100vh",
+              background: "#1f1f1f",
               color: "#fff",
-              cursor: "pointer",
-              fontWeight: "bold",
-              fontSize: "16px",
+              padding: "25px",
+              zIndex: 2000,
+              boxShadow: "5px 0 20px rgba(0,0,0,.4)",
+              boxSizing: "border-box",
+              overflowY: "auto",
             }}
           >
-            Close Menu
-          </button>
-        </div>
+            <h2
+              style={{
+                marginBottom: "20px",
+                color: "#00c8c8",
+              }}
+            >
+              ☰ Shop by Category
+            </h2>
+
+            <hr
+              style={{
+                border: "1px solid #444",
+                marginBottom: "20px",
+              }}
+            />
+
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "12px",
+              }}
+            >
+              <Link
+                style={linkStyle}
+                to="/category/mobiles"
+                onClick={() => setMenuOpen(false)}
+              >
+                📱 Mobiles
+              </Link>
+
+              <Link
+                style={linkStyle}
+                to="/category/laptops"
+                onClick={() => setMenuOpen(false)}
+              >
+                💻 Laptops
+              </Link>
+
+              <Link
+                style={linkStyle}
+                to="/category/televisions"
+                onClick={() => setMenuOpen(false)}
+              >
+                📺 Televisions
+              </Link>
+
+              <Link
+                style={linkStyle}
+                to="/category/refrigerators"
+                onClick={() => setMenuOpen(false)}
+              >
+                🧊 Refrigerators
+              </Link>
+
+              <Link
+                style={linkStyle}
+                to="/category/washing-machines"
+                onClick={() => setMenuOpen(false)}
+              >
+                🧺 Washing Machines
+              </Link>
+
+              <Link
+                style={linkStyle}
+                to="/category/air-conditioners"
+                onClick={() => setMenuOpen(false)}
+              >
+                ❄️ Air Conditioners
+              </Link>
+
+              <Link
+                style={linkStyle}
+                to="/category/audio"
+                onClick={() => setMenuOpen(false)}
+              >
+                🎧 Audio
+              </Link>
+
+              <Link
+                style={linkStyle}
+                to="/category/smart-watches"
+                onClick={() => setMenuOpen(false)}
+              >
+                ⌚ Smart Watches
+              </Link>
+
+              <Link
+                style={linkStyle}
+                to="/category/cameras"
+                onClick={() => setMenuOpen(false)}
+              >
+                📷 Cameras
+              </Link>
+
+              <Link
+                style={linkStyle}
+                to="/category/gaming"
+                onClick={() => setMenuOpen(false)}
+              >
+                🎮 Gaming
+              </Link>
+            </div>
+
+            <button
+              onClick={() => setMenuOpen(false)}
+              style={{
+                marginTop: "35px",
+                width: "100%",
+                padding: "14px",
+                border: "none",
+                borderRadius: "8px",
+                background: "#00c8c8",
+                color: "#fff",
+                cursor: "pointer",
+                fontWeight: "bold",
+                fontSize: "16px",
+              }}
+            >
+              Close Menu
+            </button>
+          </div>
+        </>
       )}
     </>
   );

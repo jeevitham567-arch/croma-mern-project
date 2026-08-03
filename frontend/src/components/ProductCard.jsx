@@ -7,12 +7,21 @@ function ProductCard({ product }) {
     try {
       await API.post("/cart", {
         productId: id,
+        quantity: 1,
       });
 
-      alert("Product Added To Cart");
+      alert("Product Added To Cart 🛒");
     } catch (error) {
-      console.log(error);
-      alert("Unable to add product to cart");
+      console.log("Cart Error:", error);
+
+      if (error.response?.status === 401) {
+        alert("Please login first");
+      } else {
+        alert(
+          error.response?.data?.message ||
+            "Unable to add product to cart"
+        );
+      }
     }
   };
 
@@ -24,15 +33,20 @@ function ProductCard({ product }) {
 
       alert("Added To Wishlist ❤️");
     } catch (error) {
-      console.log(error);
+      console.log("Wishlist Error:", error);
 
-      if (error.response?.data?.message) {
-        alert(error.response.data.message);
+      if (error.response?.status === 401) {
+        alert("Please login first");
       } else {
-        alert("Unable to add to Wishlist");
+        alert(
+          error.response?.data?.message ||
+            "Unable to add to Wishlist"
+        );
       }
     }
   };
+
+  const isOutOfStock = product.stock <= 0;
 
   return (
     <div
@@ -47,33 +61,38 @@ function ProductCard({ product }) {
         overflow: "hidden",
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = "translateY(-8px)";
+        e.currentTarget.style.transform =
+          "translateY(-8px)";
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.transform = "translateY(0px)";
+        e.currentTarget.style.transform =
+          "translateY(0px)";
       }}
     >
-      {/* Wishlist Icon */}
+      {/* Wishlist */}
 
-      <div
+      <button
         onClick={() => addToWishlist(product._id)}
         style={{
           position: "absolute",
           top: "15px",
           right: "15px",
-          width: "38px",
-          height: "38px",
+          width: "40px",
+          height: "40px",
           borderRadius: "50%",
           background: "#2a2a2a",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
           cursor: "pointer",
-          transition: "0.3s",
+          border: "none",
+          zIndex: 2,
         }}
       >
         <FiHeart size={22} color="#fff" />
-      </div>
+      </button>
+
+      {/* Product Image */}
 
       <Link to={`/product/${product._id}`}>
         <img
@@ -90,6 +109,8 @@ function ProductCard({ product }) {
         />
       </Link>
 
+      {/* Product Name */}
+
       <h3
         style={{
           fontSize: "20px",
@@ -103,6 +124,8 @@ function ProductCard({ product }) {
         {product.name}
       </h3>
 
+      {/* Description */}
+
       <p
         style={{
           color: "#bdbdbd",
@@ -115,14 +138,18 @@ function ProductCard({ product }) {
         {product.description}
       </p>
 
+      {/* Price */}
+
       <h2
         style={{
           color: "#fff",
           marginBottom: "5px",
         }}
       >
-        ₹ {product.price.toLocaleString()}
+        ₹ {product.price?.toLocaleString()}
       </h2>
+
+      {/* Old Price */}
 
       <p
         style={{
@@ -131,8 +158,13 @@ function ProductCard({ product }) {
           marginBottom: "5px",
         }}
       >
-        ₹ {(product.price + 5000).toLocaleString()}
+        ₹{" "}
+        {(
+          Number(product.price || 0) + 5000
+        ).toLocaleString()}
       </p>
+
+      {/* Discount */}
 
       <p
         style={{
@@ -144,32 +176,78 @@ function ProductCard({ product }) {
         Save ₹5,000
       </p>
 
+      {/* Rating */}
+
       <p
         style={{
           color: "#ffc107",
           fontSize: "17px",
-          marginBottom: "20px",
+          marginBottom: "8px",
         }}
       >
-        ⭐⭐⭐⭐⭐
+        ⭐ {product.rating || 0}
       </p>
+
+      {/* Stock */}
+
+      <p
+        style={{
+          color: isOutOfStock
+            ? "#ff5252"
+            : "#00e676",
+          fontWeight: "bold",
+          marginBottom: "15px",
+        }}
+      >
+        {isOutOfStock
+          ? "Out of Stock"
+          : `In Stock (${product.stock})`}
+      </p>
+
+      {/* Add To Cart */}
 
       <button
         onClick={() => addToCart(product._id)}
+        disabled={isOutOfStock}
         style={{
           width: "100%",
           padding: "13px",
-          background: "#00c853",
+          background: isOutOfStock
+            ? "#666"
+            : "#00c853",
           color: "#fff",
           border: "none",
           borderRadius: "8px",
-          cursor: "pointer",
+          cursor: isOutOfStock
+            ? "not-allowed"
+            : "pointer",
           fontWeight: "bold",
           fontSize: "16px",
         }}
       >
-        🛒 Add To Cart
+        {isOutOfStock
+          ? "Out of Stock"
+          : "🛒 Add To Cart"}
       </button>
+
+      {/* View Details */}
+
+      <Link
+        to={`/product/${product._id}`}
+        style={{
+          display: "block",
+          textAlign: "center",
+          marginTop: "12px",
+          padding: "11px",
+          border: "1px solid #555",
+          borderRadius: "8px",
+          color: "#fff",
+          textDecoration: "none",
+          fontWeight: "bold",
+        }}
+      >
+        View Details
+      </Link>
     </div>
   );
 }

@@ -7,10 +7,14 @@ import API from "../services/api";
 function EditProfile() {
   const navigate = useNavigate();
 
-  const [user, setUser] = useState({
+  const [form, setForm] = useState({
     name: "",
+    email: "",
     phone: "",
   });
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     getProfile();
@@ -20,18 +24,27 @@ function EditProfile() {
     try {
       const res = await API.get("/auth/profile");
 
-      setUser({
-        name: res.data.user.name,
-        phone: res.data.user.phone || "",
+      const user = res.data.user;
+
+      setForm({
+        name: user.name || "",
+        email: user.email || "",
+        phone: user.phone || "",
       });
     } catch (error) {
-      console.log(error);
+      console.log("Profile Error:", error);
+      alert(
+        error.response?.data?.message ||
+          "Unable to load profile"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleChange = (e) => {
-    setUser({
-      ...user,
+    setForm({
+      ...form,
       [e.target.name]: e.target.value,
     });
   };
@@ -39,17 +52,73 @@ function EditProfile() {
   const updateProfile = async (e) => {
     e.preventDefault();
 
-    try {
-      await API.put("/auth/profile", user);
+    if (!form.name || !form.email) {
+      alert("Name and email are required");
+      return;
+    }
 
-      alert("Profile Updated Successfully");
+    try {
+      setSaving(true);
+
+      const res = await API.put(
+        "/auth/profile",
+        form
+      );
+
+      alert(
+        res.data.message ||
+          "Profile updated successfully"
+      );
+
+      // Update localStorage user
+      const oldUser =
+        JSON.parse(
+          localStorage.getItem("user")
+        ) || {};
+
+      const updatedUser = {
+        ...oldUser,
+        ...res.data.user,
+      };
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(updatedUser)
+      );
 
       navigate("/profile");
     } catch (error) {
-      console.log(error);
-      alert("Unable to update profile");
+      console.log("Update Profile Error:", error);
+
+      alert(
+        error.response?.data?.message ||
+          "Unable to update profile"
+      );
+    } finally {
+      setSaving(false);
     }
   };
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+
+        <div
+          style={{
+            minHeight: "70vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <h2>Loading...</h2>
+        </div>
+
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
@@ -57,51 +126,120 @@ function EditProfile() {
 
       <div
         style={{
-          maxWidth: "600px",
-          margin: "40px auto",
-          background: "#fff",
-          padding: "30px",
-          borderRadius: "12px",
-          boxShadow: "0 3px 10px rgba(0,0,0,.1)",
+          background: "#f5f5f5",
+          minHeight: "80vh",
+          padding: "50px 20px",
         }}
       >
-        <h1>Edit Profile</h1>
-
-        <form onSubmit={updateProfile}>
-          <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value={user.name}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <input
-            type="text"
-            name="phone"
-            placeholder="Phone Number"
-            value={user.phone}
-            onChange={handleChange}
-            style={inputStyle}
-          />
-
-          <button
-            type="submit"
+        <div
+          style={{
+            maxWidth: "650px",
+            margin: "0 auto",
+            background: "#fff",
+            padding: "35px",
+            borderRadius: "14px",
+            boxShadow:
+              "0 3px 12px rgba(0,0,0,0.08)",
+          }}
+        >
+          <h1
             style={{
-              width: "100%",
-              padding: "15px",
-              background: "#00bcd4",
-              color: "#fff",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-              fontWeight: "bold",
+              textAlign: "center",
+              marginBottom: "10px",
             }}
           >
-            Update Profile
-          </button>
-        </form>
+            Edit Profile
+          </h1>
+
+          <p
+            style={{
+              textAlign: "center",
+              color: "#777",
+              marginBottom: "30px",
+            }}
+          >
+            Update your personal information
+          </p>
+
+          <form onSubmit={updateProfile}>
+            <label>Name</label>
+
+            <input
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="Enter your name"
+              style={inputStyle}
+            />
+
+            <label>Email</label>
+
+            <input
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder="Enter your email"
+              style={inputStyle}
+            />
+
+            <label>Phone</label>
+
+            <input
+              type="text"
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+              placeholder="Enter your phone number"
+              style={inputStyle}
+            />
+
+            <button
+              type="submit"
+              disabled={saving}
+              style={{
+                width: "100%",
+                padding: "14px",
+                background: saving
+                  ? "#999"
+                  : "#00bcd4",
+                color: "#fff",
+                border: "none",
+                borderRadius: "8px",
+                cursor: saving
+                  ? "not-allowed"
+                  : "pointer",
+                fontSize: "16px",
+                fontWeight: "bold",
+                marginTop: "15px",
+              }}
+            >
+              {saving
+                ? "Saving..."
+                : "Save Changes"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => navigate("/profile")}
+              style={{
+                width: "100%",
+                padding: "14px",
+                background: "#eee",
+                color: "#333",
+                border: "none",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontSize: "16px",
+                fontWeight: "bold",
+                marginTop: "12px",
+              }}
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
       </div>
 
       <Footer />
@@ -111,10 +249,12 @@ function EditProfile() {
 
 const inputStyle = {
   width: "100%",
-  padding: "12px",
-  marginBottom: "15px",
-  border: "1px solid #ccc",
+  padding: "14px",
+  marginTop: "8px",
+  marginBottom: "20px",
   borderRadius: "8px",
+  border: "1px solid #ccc",
+  fontSize: "16px",
   boxSizing: "border-box",
 };
 

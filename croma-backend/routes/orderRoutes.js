@@ -3,27 +3,24 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  placeOrder,
-  getOrders,
   createOrder,
-  verifyPayment,
+  getMyOrders,
+  getAllOrders,
+  updateOrderStatus,
 } = require("../controllers/orderController");
 
-const verifyToken = require("../middleware/authMiddleware");
-router.get("/", verifyToken, getOrders);
+const authMiddleware = require("../middleware/authMiddleware");
 
-router.post(
-  "/create-razorpay-order",
-  verifyToken,
-  createOrder
+router.post("/", authMiddleware, createOrder);
+
+router.get("/my-orders", authMiddleware, getMyOrders);
+
+router.get("/admin/all", authMiddleware, getAllOrders);
+
+router.put(
+  "/admin/:id/status",
+  authMiddleware,
+  updateOrderStatus
 );
-
-router.post(
-  "/verify-payment",
-  verifyToken,
-  verifyPayment
-);
-
-router.post("/", verifyToken, placeOrder);
 
 module.exports = router;

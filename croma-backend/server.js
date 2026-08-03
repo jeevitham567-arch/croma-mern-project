@@ -16,6 +16,8 @@ const paymentRoutes = require("./routes/paymentRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const wishlistRoutes = require("./routes/wishlistRoutes");
 const dashboardRoutes = require("./routes/dashboardRoutes");
+const adminRoutes = require("./routes/adminRoutes");
+
 
 console.log("RAZORPAY KEY ID:", process.env.RAZORPAY_KEY_ID);
 console.log(
@@ -41,7 +43,7 @@ app.use("/api/payment", paymentRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/dashboard", dashboardRoutes);
-
+app.use("/api/admin", adminRoutes);
 app.get("/", (req, res) => {
   res.send("Backend Running...");
 });
