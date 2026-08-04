@@ -40,7 +40,7 @@ function AdminOrders() {
 
       setOrders(res.data.orders || []);
     } catch (error) {
-      console.log("Get Admin Orders Error:", error);
+      console.log("Admin Orders Error:", error);
 
       alert(
         error.response?.data?.message ||
@@ -53,18 +53,15 @@ function AdminOrders() {
 
   const updateStatus = async (id, status) => {
     try {
-      await API.put(
-        `/orders/admin/${id}/status`,
-        {
-          status,
-        }
-      );
+      await API.put(`/orders/admin/${id}/status`, {
+        status,
+      });
 
       alert("Order status updated successfully");
 
       getOrders();
     } catch (error) {
-      console.log("Update Status Error:", error);
+      console.log("Status Update Error:", error);
 
       alert(
         error.response?.data?.message ||
@@ -73,14 +70,26 @@ function AdminOrders() {
     }
   };
 
-  const getStatusColor = (status) => {
-    if (status === "Delivered") return "green";
-    if (status === "Cancelled") return "red";
-    if (status === "Shipped") return "#6c5ce7";
-    if (status === "Confirmed") return "#0984e3";
+  if (loading) {
+    return (
+      <>
+        <Navbar />
 
-    return "#f39c12";
-  };
+        <div
+          style={{
+            minHeight: "70vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <h2>Loading Orders...</h2>
+        </div>
+
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
@@ -89,8 +98,8 @@ function AdminOrders() {
       <div
         style={{
           background: "#f5f5f5",
-          minHeight: "80vh",
-          padding: "40px",
+          minHeight: "100vh",
+          padding: "40px 20px",
         }}
       >
         <div
@@ -99,7 +108,9 @@ function AdminOrders() {
             margin: "auto",
           }}
         >
-          <h1>Manage Orders</h1>
+          <h1 style={{ marginBottom: "10px" }}>
+            📦 Admin Orders
+          </h1>
 
           <p
             style={{
@@ -107,16 +118,14 @@ function AdminOrders() {
               marginBottom: "30px",
             }}
           >
-            View and manage all customer orders.
+            Manage all customer orders from here.
           </p>
 
-          {loading ? (
-            <h2>Loading orders...</h2>
-          ) : orders.length === 0 ? (
+          {orders.length === 0 ? (
             <div
               style={{
                 background: "#fff",
-                padding: "40px",
+                padding: "50px",
                 borderRadius: "12px",
                 textAlign: "center",
               }}
@@ -124,7 +133,7 @@ function AdminOrders() {
               <h2>No Orders Found</h2>
 
               <p style={{ color: "#777" }}>
-                There are no customer orders yet.
+                Customer orders will appear here.
               </p>
             </div>
           ) : (
@@ -134,8 +143,8 @@ function AdminOrders() {
                 style={{
                   background: "#fff",
                   padding: "25px",
-                  borderRadius: "12px",
                   marginBottom: "25px",
+                  borderRadius: "12px",
                   boxShadow:
                     "0 3px 10px rgba(0,0,0,0.08)",
                 }}
@@ -146,91 +155,73 @@ function AdminOrders() {
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    alignItems: "center",
                     flexWrap: "wrap",
-                    gap: "15px",
+                    gap: "20px",
                     marginBottom: "20px",
                   }}
                 >
                   <div>
-                    <h2>
-                      Order #
-                      {order._id.slice(-6).toUpperCase()}
-                    </h2>
+                    <h3>Order ID</h3>
 
                     <p
                       style={{
                         color: "#777",
-                        marginTop: "5px",
+                        wordBreak: "break-all",
                       }}
                     >
-                      {new Date(
-                        order.createdAt
-                      ).toLocaleString()}
+                      {order._id}
                     </p>
                   </div>
 
-                  <div
-                    style={{
-                      background: getStatusColor(
-                        order.status
-                      ),
-                      color: "#fff",
-                      padding: "8px 16px",
-                      borderRadius: "20px",
-                      fontWeight: "bold",
-                    }}
-                  >
-                    {order.status}
+                  <div>
+                    <h3>Customer</h3>
+
+                    <p>
+                      {order.user?.name ||
+                        "Unknown User"}
+                    </p>
+
+                    <p
+                      style={{
+                        color: "#777",
+                      }}
+                    >
+                      {order.user?.email || ""}
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3>Order Date</h3>
+
+                    <p>
+                      {order.createdAt
+                        ? new Date(
+                            order.createdAt
+                          ).toLocaleDateString()
+                        : "N/A"}
+                    </p>
                   </div>
                 </div>
 
-                {/* Customer */}
-
-                <div
-                  style={{
-                    background: "#f8f8f8",
-                    padding: "15px",
-                    borderRadius: "8px",
-                    marginBottom: "20px",
-                  }}
-                >
-                  <h3>Customer</h3>
-
-                  <p>
-                    Name:{" "}
-                    <strong>
-                      {order.user?.name || "N/A"}
-                    </strong>
-                  </p>
-
-                  <p>
-                    Email:{" "}
-                    <strong>
-                      {order.user?.email || "N/A"}
-                    </strong>
-                  </p>
-
-                  <p>
-                    Address:{" "}
-                    <strong>
-                      {order.address}
-                    </strong>
-                  </p>
-                </div>
+                <hr />
 
                 {/* Products */}
 
-                <h3>Products</h3>
-
-                <div
+                <h3
                   style={{
-                    marginTop: "15px",
+                    marginTop: "20px",
+                    marginBottom: "15px",
                   }}
                 >
-                  {order.items?.map((item, index) => (
+                  Products
+                </h3>
+
+                {order.items?.map(
+                  (item, index) => (
                     <div
-                      key={index}
+                      key={
+                        item._id || index
+                      }
                       style={{
                         display: "flex",
                         alignItems: "center",
@@ -240,114 +231,201 @@ function AdminOrders() {
                           "1px solid #eee",
                       }}
                     >
-                      <img
-                        src={
-                          item.product?.image
-                            ? `http://localhost:5000/uploads/${item.product.image}`
-                            : ""
-                        }
-                        alt={
-                          item.product?.name ||
-                          "Product"
-                        }
-                        style={{
-                          width: "70px",
-                          height: "70px",
-                          objectFit: "contain",
-                        }}
-                      />
+                      {item.product?.image ? (
+                        <img
+                          src={`http://localhost:5000/uploads/${item.product.image}`}
+                          alt={
+                            item.product.name ||
+                            "Product"
+                          }
+                          style={{
+                            width: "70px",
+                            height: "70px",
+                            objectFit: "contain",
+                          }}
+                        />
+                      ) : (
+                        <div
+                          style={{
+                            width: "70px",
+                            height: "70px",
+                            background:
+                              "#f5f5f5",
+                            display: "flex",
+                            justifyContent:
+                              "center",
+                            alignItems:
+                              "center",
+                            fontSize: "25px",
+                          }}
+                        >
+                          📦
+                        </div>
+                      )}
 
-                      <div style={{ flex: 1 }}>
-                        <h3>
+                      <div>
+                        <h4>
                           {item.product?.name ||
                             "Product"}
-                        </h3>
+                        </h4>
 
                         <p
                           style={{
                             color: "#777",
                           }}
                         >
-                          Quantity: {item.quantity}
+                          Quantity:{" "}
+                          {item.quantity || 1}
+                        </p>
+
+                        <p
+                          style={{
+                            color: "#00b894",
+                            fontWeight:
+                              "bold",
+                          }}
+                        >
+                          ₹{" "}
+                          {Number(
+                            item.product?.price ||
+                              0
+                          ).toLocaleString()}
                         </p>
                       </div>
-
-                      <strong>
-                        ₹{" "}
-                        {(
-                          item.price *
-                          item.quantity
-                        ).toLocaleString()}
-                      </strong>
                     </div>
-                  ))}
-                </div>
+                  )
+                )}
 
-                {/* Bottom */}
+                {/* Total */}
 
                 <div
                   style={{
                     display: "flex",
-                    justifyContent: "space-between",
+                    justifyContent:
+                      "space-between",
                     alignItems: "center",
                     marginTop: "25px",
                     flexWrap: "wrap",
-                    gap: "20px",
+                    gap: "15px",
                   }}
                 >
-                  <h2>
-                    Total: ₹{" "}
-                    {order.totalAmount?.toLocaleString()}
+                  <h3>Total Amount</h3>
+
+                  <h2
+                    style={{
+                      color: "#00b894",
+                    }}
+                  >
+                    ₹{" "}
+                    {Number(
+                      order.totalAmount || 0
+                    ).toLocaleString()}
                   </h2>
-
-                  <div>
-                    <label
-                      style={{
-                        fontWeight: "bold",
-                        marginRight: "10px",
-                      }}
-                    >
-                      Update Status:
-                    </label>
-
-                    <select
-                      value={order.status}
-                      onChange={(e) =>
-                        updateStatus(
-                          order._id,
-                          e.target.value
-                        )
-                      }
-                      style={{
-                        padding: "10px 15px",
-                        borderRadius: "8px",
-                        border:
-                          "1px solid #ccc",
-                        cursor: "pointer",
-                      }}
-                    >
-                      <option value="Pending">
-                        Pending
-                      </option>
-
-                      <option value="Confirmed">
-                        Confirmed
-                      </option>
-
-                      <option value="Shipped">
-                        Shipped
-                      </option>
-
-                      <option value="Delivered">
-                        Delivered
-                      </option>
-
-                      <option value="Cancelled">
-                        Cancelled
-                      </option>
-                    </select>
-                  </div>
                 </div>
+
+                {/* Status */}
+
+                <div
+                  style={{
+                    marginTop: "20px",
+                  }}
+                >
+                  <label
+                    style={{
+                      display: "block",
+                      fontWeight: "bold",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    Order Status
+                  </label>
+
+                  <select
+                    value={
+                      order.status ||
+                      "Pending"
+                    }
+                    onChange={(e) =>
+                      updateStatus(
+                        order._id,
+                        e.target.value
+                      )
+                    }
+                    style={{
+                      padding: "10px 15px",
+                      borderRadius: "8px",
+                      border:
+                        "1px solid #ccc",
+                      cursor: "pointer",
+                      fontSize: "15px",
+                    }}
+                  >
+                    <option value="Pending">
+                      Pending
+                    </option>
+
+                    <option value="Confirmed">
+                      Confirmed
+                    </option>
+
+                    <option value="Shipped">
+                      Shipped
+                    </option>
+
+                    <option value="Delivered">
+                      Delivered
+                    </option>
+
+                    <option value="Cancelled">
+                      Cancelled
+                    </option>
+                  </select>
+                </div>
+
+                {/* Address */}
+
+                {order.address && (
+                  <div
+                    style={{
+                      marginTop: "20px",
+                      padding: "15px",
+                      background:
+                        "#f8f9fa",
+                      borderRadius: "8px",
+                    }}
+                  >
+                    <h3>
+                      📍 Delivery Address
+                    </h3>
+
+                    <p
+                      style={{
+                        color: "#555",
+                        lineHeight:
+                          "24px",
+                      }}
+                    >
+                      <b>
+                        {order.address.name}
+                      </b>
+                      <br />
+
+                      {order.address.address}
+                      <br />
+
+                      {order.address.city},{" "}
+                      {order.address.state}
+                      <br />
+
+                      Pincode:{" "}
+                      {order.address.pincode}
+                      <br />
+
+                      Phone:{" "}
+                      {order.address.phone}
+                    </p>
+                  </div>
+                )}
               </div>
             ))
           )}

@@ -20,29 +20,24 @@ import AdminDashboard from "./pages/AdminDashboard";
 import ManageProducts from "./pages/ManageProducts";
 import AddProduct from "./pages/AddProduct";
 import EditProduct from "./pages/EditProduct";
-
-import NotFound from "./pages/NotFound";
-import ManageUsers from "./pages/ManageUsers";
 import AdminOrders from "./pages/AdminOrders";
 import AdminUsers from "./pages/AdminUsers";
+
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
 
-        {/* ================= HOME ================= */}
-
+        {/* HOME */}
         <Route path="/" element={<Home />} />
 
-        {/* ================= AUTH ================= */}
-
+        {/* AUTH */}
         <Route path="/login" element={<Login />} />
-
         <Route path="/register" element={<Register />} />
 
-        {/* ================= PRODUCTS ================= */}
-
+        {/* PRODUCTS */}
         <Route
           path="/product/:id"
           element={<ProductDetails />}
@@ -53,12 +48,8 @@ function App() {
           element={<CategoryProducts />}
         />
 
-        {/* ================= SHOPPING ================= */}
-
-        <Route
-          path="/cart"
-          element={<Cart />}
-        />
+        {/* SHOPPING */}
+        <Route path="/cart" element={<Cart />} />
 
         <Route
           path="/wishlist"
@@ -75,8 +66,7 @@ function App() {
           element={<Orders />}
         />
 
-        {/* ================= PROFILE ================= */}
-
+        {/* PROFILE */}
         <Route
           path="/profile"
           element={<Profile />}
@@ -92,8 +82,7 @@ function App() {
           element={<ChangePassword />}
         />
 
-        {/* ================= ADMIN ================= */}
-
+        {/* ADMIN */}
         <Route
           path="/admin"
           element={<AdminDashboard />}
@@ -114,17 +103,6 @@ function App() {
           element={<EditProduct />}
         />
 
-        {/* ================= 404 ================= */}
-
-        <Route
-          path="*"
-          element={<NotFound />}
-        />
-        <Route
-          path="/admin/users"
-          element={<ManageUsers />}
-        />
-
         <Route
           path="/admin/orders"
           element={<AdminOrders />}
@@ -133,6 +111,12 @@ function App() {
         <Route
           path="/admin/users"
           element={<AdminUsers />}
+        />
+
+        {/* 404 */}
+        <Route
+          path="*"
+          element={<NotFound />}
         />
 
       </Routes>
