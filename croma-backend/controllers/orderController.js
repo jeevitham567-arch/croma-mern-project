@@ -1,14 +1,115 @@
 const Order = require("../models/Order");
+const crypto = require("crypto");
+const razorpay = require("../config/razorpay");
 
 // ===============================
-// CREATE ORDER
+// CREATE RAZORPAY ORDER
+// ===============================
+const createRazorpayOrder = async (req, res) => {
+  try {
+    const { amount } = req.body;
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment amount",
+      });
+    }
+
+    const options = {
+      amount: Math.round(Number(amount) * 100),
+      currency: "INR",
+      receipt: `receipt_${Date.now()}`,
+    };
+
+    const razorpayOrder = await razorpay.orders.create(options);
+
+    res.status(200).json({
+      success: true,
+      order: razorpayOrder,
+    });
+  } catch (error) {
+    console.error("Create Razorpay Order Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to create Razorpay order",
+      error: error.message,
+    });
+  }
+};
+
+// ===============================
+// VERIFY RAZORPAY PAYMENT
+// ===============================
+const verifyPayment = async (req, res) => {
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+    } = req.body;
+
+    if (
+      !razorpay_order_id ||
+      !razorpay_payment_id ||
+      !razorpay_signature
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Payment details are missing",
+      });
+    }
+
+    const body =
+      razorpay_order_id +
+      "|" +
+      razorpay_payment_id;
+
+    const expectedSignature = crypto
+      .createHmac(
+        "sha256",
+        process.env.RAZORPAY_KEY_SECRET
+      )
+      .update(body)
+      .digest("hex");
+
+    if (expectedSignature !== razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment signature",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Payment verified successfully",
+    });
+  } catch (error) {
+    console.error("Verify Payment Error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Payment verification failed",
+      error: error.message,
+    });
+  }
+};
+
+// ===============================
+// CREATE FINAL ORDER
 // ===============================
 const createOrder = async (req, res) => {
   try {
-    const { items, totalAmount, address } = req.body;
+    const {
+      items,
+      totalAmount,
+      address,
+    } = req.body;
 
     if (!items || items.length === 0) {
       return res.status(400).json({
+        success: false,
         message: "No items in order",
       });
     }
@@ -17,10 +118,11 @@ const createOrder = async (req, res) => {
       user: req.user.id,
       items,
       totalAmount,
-      address,
+      address: JSON.stringify(address),
     });
 
     res.status(201).json({
+      success: true,
       message: "Order created successfully",
       order,
     });
@@ -28,6 +130,7 @@ const createOrder = async (req, res) => {
     console.error("Create Order Error:", error);
 
     res.status(500).json({
+      success: false,
       message: "Failed to create order",
       error: error.message,
     });
@@ -53,6 +156,7 @@ const getMyOrders = async (req, res) => {
     console.error("Get Orders Error:", error);
 
     res.status(500).json({
+      success: false,
       message: "Failed to get orders",
       error: error.message,
     });
@@ -106,7 +210,16 @@ const updateOrderStatus = async (req, res) => {
       });
     }
 
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      {
+        status,
+      },
+      {
+        new: true,
+        runValidators: false,
+      }
+    );
 
     if (!order) {
       return res.status(404).json({
@@ -115,17 +228,16 @@ const updateOrderStatus = async (req, res) => {
       });
     }
 
-    order.status = status;
-
-    await order.save();
-
     res.status(200).json({
       success: true,
       message: "Order status updated successfully",
       order,
     });
   } catch (error) {
-    console.error("Update Order Status Error:", error);
+    console.error(
+      "Update Order Status Error:",
+      error
+    );
 
     res.status(500).json({
       success: false,
@@ -135,7 +247,12 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
+// ===============================
+// EXPORT ALL FUNCTIONS
+// ===============================
 module.exports = {
+  createRazorpayOrder,
+  verifyPayment,
   createOrder,
   getMyOrders,
   getAllOrders,

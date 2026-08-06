@@ -24,6 +24,7 @@ import AdminOrders from "./pages/AdminOrders";
 import AdminUsers from "./pages/AdminUsers";
 
 import NotFound from "./pages/NotFound";
+import ManageOrders from "./pages/ManageOrders";
 
 function App() {
   return (
@@ -118,6 +119,7 @@ function App() {
           path="*"
           element={<NotFound />}
         />
+        <Route path="/manage-orders" element={<ManageOrders />} />
 
       </Routes>
     </BrowserRouter>

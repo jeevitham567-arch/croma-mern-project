@@ -10,11 +10,15 @@ function AdminOrders() {
 
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState(null);
 
   useEffect(() => {
     checkAdmin();
   }, []);
 
+  // ================================
+  // CHECK ADMIN
+  // ================================
   const checkAdmin = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     const token = localStorage.getItem("token");
@@ -34,11 +38,20 @@ function AdminOrders() {
     getOrders();
   };
 
+  // ================================
+  // GET ALL ORDERS
+  // ================================
   const getOrders = async () => {
     try {
+      setLoading(true);
+
       const res = await API.get("/orders/admin/all");
 
-      setOrders(res.data.orders || []);
+      setOrders(
+        Array.isArray(res.data.orders)
+          ? res.data.orders
+          : []
+      );
     } catch (error) {
       console.log("Admin Orders Error:", error);
 
@@ -51,25 +64,54 @@ function AdminOrders() {
     }
   };
 
+  // ================================
+  // UPDATE ORDER STATUS
+  // ================================
   const updateStatus = async (id, status) => {
     try {
-      await API.put(`/orders/admin/${id}/status`, {
-        status,
-      });
+      setUpdatingId(id);
 
-      alert("Order status updated successfully");
+      const res = await API.put(
+        `/orders/admin/${id}/status`,
+        {
+          status,
+        }
+      );
 
-      getOrders();
+      alert(
+        res.data?.message ||
+          "Order status updated successfully"
+      );
+
+      // Update status immediately in UI
+      setOrders((previousOrders) =>
+        previousOrders.map((order) =>
+          order._id === id
+            ? {
+                ...order,
+                status,
+              }
+            : order
+        )
+      );
     } catch (error) {
-      console.log("Status Update Error:", error);
+      console.log(
+        "Status Update Error:",
+        error
+      );
 
       alert(
         error.response?.data?.message ||
           "Unable to update order status"
       );
+    } finally {
+      setUpdatingId(null);
     }
   };
 
+  // ================================
+  // LOADING
+  // ================================
   if (loading) {
     return (
       <>
@@ -91,6 +133,9 @@ function AdminOrders() {
     );
   }
 
+  // ================================
+  // PAGE
+  // ================================
   return (
     <>
       <Navbar />
@@ -108,18 +153,45 @@ function AdminOrders() {
             margin: "auto",
           }}
         >
-          <h1 style={{ marginBottom: "10px" }}>
-            📦 Admin Orders
-          </h1>
+          {/* HEADER */}
 
-          <p
+          <div
             style={{
-              color: "#777",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: "15px",
               marginBottom: "30px",
             }}
           >
-            Manage all customer orders from here.
-          </p>
+            <div>
+              <h1 style={{ marginBottom: "8px" }}>
+                📦 Admin Orders
+              </h1>
+
+              <p style={{ color: "#777" }}>
+                Manage all customer orders from here.
+              </p>
+            </div>
+
+            <button
+              onClick={() => navigate("/admin")}
+              style={{
+                padding: "12px 20px",
+                background: "#00b894",
+                color: "#fff",
+                border: "none",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontWeight: "bold",
+              }}
+            >
+              ← Dashboard
+            </button>
+          </div>
+
+          {/* NO ORDERS */}
 
           {orders.length === 0 ? (
             <div
@@ -128,15 +200,24 @@ function AdminOrders() {
                 padding: "50px",
                 borderRadius: "12px",
                 textAlign: "center",
+                boxShadow:
+                  "0 3px 10px rgba(0,0,0,0.08)",
               }}
             >
               <h2>No Orders Found</h2>
 
-              <p style={{ color: "#777" }}>
+              <p
+                style={{
+                  color: "#777",
+                  marginTop: "10px",
+                }}
+              >
                 Customer orders will appear here.
               </p>
             </div>
           ) : (
+            /* ORDERS */
+
             orders.map((order) => (
               <div
                 key={order._id}
@@ -149,13 +230,13 @@ function AdminOrders() {
                     "0 3px 10px rgba(0,0,0,0.08)",
                 }}
               >
-                {/* Order Header */}
+                {/* ORDER HEADER */}
 
                 <div
                   style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    flexWrap: "wrap",
+                    display: "grid",
+                    gridTemplateColumns:
+                      "repeat(auto-fit,minmax(220px,1fr))",
                     gap: "20px",
                     marginBottom: "20px",
                   }}
@@ -167,6 +248,7 @@ function AdminOrders() {
                       style={{
                         color: "#777",
                         wordBreak: "break-all",
+                        marginTop: "5px",
                       }}
                     >
                       {order._id}
@@ -176,7 +258,7 @@ function AdminOrders() {
                   <div>
                     <h3>Customer</h3>
 
-                    <p>
+                    <p style={{ marginTop: "5px" }}>
                       {order.user?.name ||
                         "Unknown User"}
                     </p>
@@ -184,6 +266,7 @@ function AdminOrders() {
                     <p
                       style={{
                         color: "#777",
+                        marginTop: "4px",
                       }}
                     >
                       {order.user?.email || ""}
@@ -193,7 +276,7 @@ function AdminOrders() {
                   <div>
                     <h3>Order Date</h3>
 
-                    <p>
+                    <p style={{ marginTop: "5px" }}>
                       {order.createdAt
                         ? new Date(
                             order.createdAt
@@ -205,7 +288,7 @@ function AdminOrders() {
 
                 <hr />
 
-                {/* Products */}
+                {/* PRODUCTS */}
 
                 <h3
                   style={{
@@ -242,6 +325,7 @@ function AdminOrders() {
                             width: "70px",
                             height: "70px",
                             objectFit: "contain",
+                            borderRadius: "8px",
                           }}
                         />
                       ) : (
@@ -249,14 +333,12 @@ function AdminOrders() {
                           style={{
                             width: "70px",
                             height: "70px",
-                            background:
-                              "#f5f5f5",
+                            background: "#f5f5f5",
                             display: "flex",
-                            justifyContent:
-                              "center",
-                            alignItems:
-                              "center",
+                            justifyContent: "center",
+                            alignItems: "center",
                             fontSize: "25px",
+                            borderRadius: "8px",
                           }}
                         >
                           📦
@@ -272,6 +354,7 @@ function AdminOrders() {
                         <p
                           style={{
                             color: "#777",
+                            marginTop: "5px",
                           }}
                         >
                           Quantity:{" "}
@@ -281,8 +364,8 @@ function AdminOrders() {
                         <p
                           style={{
                             color: "#00b894",
-                            fontWeight:
-                              "bold",
+                            fontWeight: "bold",
+                            marginTop: "5px",
                           }}
                         >
                           ₹{" "}
@@ -296,7 +379,7 @@ function AdminOrders() {
                   )
                 )}
 
-                {/* Total */}
+                {/* TOTAL */}
 
                 <div
                   style={{
@@ -323,11 +406,14 @@ function AdminOrders() {
                   </h2>
                 </div>
 
-                {/* Status */}
+                {/* STATUS */}
 
                 <div
                   style={{
                     marginTop: "20px",
+                    padding: "15px",
+                    background: "#f8f9fa",
+                    borderRadius: "8px",
                   }}
                 >
                   <label
@@ -345,6 +431,9 @@ function AdminOrders() {
                       order.status ||
                       "Pending"
                     }
+                    disabled={
+                      updatingId === order._id
+                    }
                     onChange={(e) =>
                       updateStatus(
                         order._id,
@@ -356,8 +445,13 @@ function AdminOrders() {
                       borderRadius: "8px",
                       border:
                         "1px solid #ccc",
-                      cursor: "pointer",
+                      cursor:
+                        updatingId === order._id
+                          ? "not-allowed"
+                          : "pointer",
                       fontSize: "15px",
+                      minWidth: "180px",
+                      background: "#fff",
                     }}
                   >
                     <option value="Pending">
@@ -380,17 +474,28 @@ function AdminOrders() {
                       Cancelled
                     </option>
                   </select>
+
+                  {updatingId ===
+                    order._id && (
+                    <span
+                      style={{
+                        marginLeft: "12px",
+                        color: "#777",
+                      }}
+                    >
+                      Updating...
+                    </span>
+                  )}
                 </div>
 
-                {/* Address */}
+                {/* ADDRESS */}
 
                 {order.address && (
                   <div
                     style={{
                       marginTop: "20px",
                       padding: "15px",
-                      background:
-                        "#f8f9fa",
+                      background: "#f8f9fa",
                       borderRadius: "8px",
                     }}
                   >
@@ -401,8 +506,8 @@ function AdminOrders() {
                     <p
                       style={{
                         color: "#555",
-                        lineHeight:
-                          "24px",
+                        lineHeight: "24px",
+                        marginTop: "8px",
                       }}
                     >
                       <b>

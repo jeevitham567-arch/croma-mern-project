@@ -7,15 +7,61 @@ const {
   getMyOrders,
   getAllOrders,
   updateOrderStatus,
+  createRazorpayOrder,
+  verifyPayment,
 } = require("../controllers/orderController");
 
 const authMiddleware = require("../middleware/authMiddleware");
 
-router.post("/", authMiddleware, createOrder);
+// ===============================
+// RAZORPAY PAYMENT
+// ===============================
 
-router.get("/my-orders", authMiddleware, getMyOrders);
+router.post(
+  "/create-razorpay-order",
+  authMiddleware,
+  createRazorpayOrder
+);
 
-router.get("/admin/all", authMiddleware, getAllOrders);
+router.post(
+  "/verify-payment",
+  authMiddleware,
+  verifyPayment
+);
+
+// ===============================
+// CREATE FINAL ORDER
+// ===============================
+
+router.post(
+  "/",
+  authMiddleware,
+  createOrder
+);
+
+// ===============================
+// USER ORDERS
+// ===============================
+
+router.get(
+  "/my-orders",
+  authMiddleware,
+  getMyOrders
+);
+
+// ===============================
+// ADMIN ALL ORDERS
+// ===============================
+
+router.get(
+  "/admin/all",
+  authMiddleware,
+  getAllOrders
+);
+
+// ===============================
+// ADMIN UPDATE STATUS
+// ===============================
 
 router.put(
   "/admin/:id/status",
