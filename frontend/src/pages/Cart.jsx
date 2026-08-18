@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import OrderSummary from "../components/OrderSummary";
 
 function Cart() {
   const [cart, setCart] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     getCart();
@@ -59,255 +60,429 @@ function Cart() {
 
       <div
         style={{
-          background: "#f5f5f5",
-          minHeight: "100vh",
-          padding: "40px",
+          background: "#000",
+          color: "#fff",
+          minHeight: "75vh",
+          padding: "30px 7%",
         }}
       >
-        <h1
+        {/* Heading */}
+        <h2
           style={{
-            textAlign: "center",
-            marginBottom: "40px",
+            fontSize: "24px",
+            marginBottom: "25px",
+            fontWeight: "700",
+            color: "#fff",
           }}
         >
-          🛒 My Cart
-        </h1>
+          YOUR CART
+        </h2>
 
         {cart.length === 0 ? (
-          <h2
+          <div
             style={{
+              background: "#151515",
+              color: "#fff",
+              padding: "50px",
               textAlign: "center",
-              color: "gray",
+              borderRadius: "8px",
+              border: "1px solid #292929",
             }}
           >
-            Your Cart is Empty
-          </h2>
+            <h2>Your Cart is Empty</h2>
+
+            <button
+              onClick={() => navigate("/")}
+              style={{
+                marginTop: "20px",
+                padding: "12px 28px",
+                border: "none",
+                borderRadius: "5px",
+                background: "#00c8a0",
+                color: "#fff",
+                fontWeight: "700",
+                cursor: "pointer",
+              }}
+            >
+              Continue Shopping
+            </button>
+          </div>
         ) : (
           <div
             style={{
-              display: "flex",
-              gap: "30px",
-              alignItems: "flex-start",
+              display: "grid",
+              gridTemplateColumns: "1fr 350px",
+              gap: "20px",
+              alignItems: "start",
             }}
           >
-            <div style={{ flex: 1 }}>
+            {/* LEFT SIDE */}
+            <div>
+              {/* Coupon */}
+              <div
+                style={{
+                  background: "#151515",
+                  padding: "18px 20px",
+                  borderRadius: "6px",
+                  marginBottom: "15px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  border: "1px solid #292929",
+                }}
+              >
+                <div>
+                  <span
+                    style={{
+                      fontSize: "20px",
+                      color: "#00c8a0",
+                    }}
+                  >
+                    %
+                  </span>
+
+                  <span
+                    style={{
+                      marginLeft: "15px",
+                      fontSize: "17px",
+                      fontWeight: "600",
+                      color: "#fff",
+                    }}
+                  >
+                    Apply Coupon
+                  </span>
+                </div>
+
+                <span
+                  style={{
+                    fontSize: "25px",
+                    color: "#aaa",
+                  }}
+                >
+                  ›
+                </span>
+              </div>
+
+              {/* Products */}
               {cart.map((item) => (
                 <div
                   key={item._id}
                   style={{
-                    display: "flex",
-                    gap: "25px",
-                    background: "#fff",
-                    padding: "20px",
-                    borderRadius: "12px",
-                    marginBottom: "20px",
-                    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+                    background: "#151515",
+                    padding: "22px",
+                    borderRadius: "6px",
+                    marginBottom: "15px",
+                    border: "1px solid #292929",
                   }}
                 >
-                  <img
-                    src={`http://localhost:5000/uploads/${item.product.image}`}
-                    alt={item.product.name}
+                  <div
                     style={{
-                      width: "170px",
-                      height: "170px",
-                      objectFit: "contain",
+                      display: "flex",
+                      gap: "22px",
                     }}
-                  />
-
-                  <div style={{ flex: 1 }}>
-                    <h2>{item.product.name}</h2>
-
-                    <p
-                      style={{
-                        color: "#666",
-                        marginTop: "10px",
-                      }}
-                    >
-                      {item.product.description}
-                    </p>
-
-                    <p
-                      style={{
-                        color: "#f5a623",
-                        fontWeight: "bold",
-                        marginTop: "10px",
-                      }}
-                    >
-                      ⭐ {item.product.rating}
-                    </p>
-
-                    <h2
-                      style={{
-                        color: "#00b894",
-                        marginTop: "15px",
-                      }}
-                    >
-                      ₹ {item.product.price.toLocaleString()}
-                    </h2>
-
-                    <p
-                      style={{
-                        textDecoration: "line-through",
-                        color: "#777",
-                      }}
-                    >
-                      ₹ {(item.product.price + 5000).toLocaleString()}
-                    </p>
-
-                    <p
-                      style={{
-                        color: "green",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Save ₹5,000
-                    </p>
-
-                    <p
-                      style={{
-                        marginTop: "10px",
-                        color: "#555",
-                      }}
-                    >
-                      🚚 Delivery by 25 July
-                    </p>
-
+                  >
+                    {/* Product Image */}
                     <div
                       style={{
+                        width: "140px",
+                        height: "140px",
                         display: "flex",
                         alignItems: "center",
-                        gap: "15px",
-                        marginTop: "20px",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                        background: "#fff",
+                        borderRadius: "6px",
                       }}
                     >
-                      <button
-                        onClick={() => decreaseQuantity(item)}
+                      <img
+                        src={`http://localhost:5000/uploads/${item.product.image}`}
+                        alt={item.product.name}
                         style={{
-                          width: "35px",
-                          height: "35px",
-                          borderRadius: "50%",
-                          border: "1px solid #ccc",
-                          background: "#fff",
-                          cursor: "pointer",
+                          width: "125px",
+                          height: "125px",
+                          objectFit: "contain",
                         }}
-                      >
-                        -
-                      </button>
-
-                      <span
-                        style={{
-                          fontWeight: "bold",
-                          fontSize: "20px",
-                        }}
-                      >
-                        {item.quantity}
-                      </span>
-
-                      <button
-                        onClick={() => increaseQuantity(item)}
-                        style={{
-                          width: "35px",
-                          height: "35px",
-                          borderRadius: "50%",
-                          background: "#00bcd4",
-                          color: "#fff",
-                          border: "none",
-                          cursor: "pointer",
-                        }}
-                      >
-                        +
-                      </button>
+                      />
                     </div>
 
-                    <button
-                      onClick={() => removeItem(item._id)}
+                    {/* Product Details */}
+                    <div style={{ flex: 1 }}>
+                      <h3
+                        style={{
+                          margin: "0 0 8px",
+                          fontSize: "18px",
+                          lineHeight: "1.4",
+                          color: "#fff",
+                        }}
+                      >
+                        {item.product.name}
+                      </h3>
+
+                      {/* Rating */}
+                      <div
+                        style={{
+                          color: "#00c8a0",
+                          fontSize: "15px",
+                          marginBottom: "8px",
+                        }}
+                      >
+                        ★★★★
+                        <span style={{ color: "#555" }}>★</span>
+                      </div>
+
+                      {/* Price */}
+                      <div
+                        style={{
+                          fontSize: "22px",
+                          fontWeight: "700",
+                          color: "#fff",
+                        }}
+                      >
+                        ₹{item.product.price.toLocaleString()}
+                      </div>
+
+                      {/* MRP */}
+                      <div
+                        style={{
+                          marginTop: "4px",
+                          color: "#777",
+                          textDecoration: "line-through",
+                          fontSize: "14px",
+                        }}
+                      >
+                        ₹{(item.product.price + 5000).toLocaleString()}
+                      </div>
+
+                      {/* Delivery */}
+                      <div
+                        style={{
+                          color: "#aaa",
+                          fontSize: "14px",
+                          marginTop: "7px",
+                        }}
+                      >
+                        Standard Delivery by 25 July
+                      </div>
+
+                      {/* Quantity + Remove */}
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "14px",
+                          marginTop: "16px",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <button
+                          onClick={() => decreaseQuantity(item)}
+                          style={quantityButton}
+                        >
+                          −
+                        </button>
+
+                        <span
+                          style={{
+                            fontWeight: "600",
+                            fontSize: "16px",
+                            color: "#fff",
+                          }}
+                        >
+                          {item.quantity}
+                        </span>
+
+                        <button
+                          onClick={() => increaseQuantity(item)}
+                          style={quantityButton}
+                        >
+                          +
+                        </button>
+
+                        <button
+                          onClick={() => removeItem(item._id)}
+                          style={{
+                            marginLeft: "12px",
+                            padding: "8px 24px",
+                            background: "#151515",
+                            color: "#fff",
+                            border: "1px solid #555",
+                            borderRadius: "5px",
+                            cursor: "pointer",
+                            fontWeight: "600",
+                          }}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Offer */}
+                  <div
+                    style={{
+                      borderTop: "1px solid #292929",
+                      marginTop: "18px",
+                      paddingTop: "13px",
+                      color: "#aaa",
+                      fontSize: "14px",
+                    }}
+                  >
+                    <span
                       style={{
-                        marginTop: "20px",
-                        padding: "10px 25px",
-                        background: "#ff4d4f",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "6px",
-                        cursor: "pointer",
+                        color: "#00c8a0",
+                        fontSize: "18px",
+                        marginRight: "10px",
                       }}
                     >
-                      Remove
-                    </button>
+                      ✓
+                    </span>
+
+                    Buy & Get Offer Applied
                   </div>
                 </div>
               ))}
-                          </div>
+            </div>
 
-            {/* Right Side Order Summary */}
+            {/* RIGHT SIDE */}
             <div
               style={{
-                width: "350px",
                 position: "sticky",
-                top: "20px",
+                top: "90px",
               }}
             >
-              <OrderSummary totalPrice={totalPrice} />
-
-              {/* Coupon Section */}
+              {/* Order Summary */}
               <div
                 style={{
-                  background: "#fff",
-                  marginTop: "20px",
+                  background: "#151515",
                   padding: "20px",
-                  borderRadius: "12px",
-                  boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+                  borderRadius: "6px",
+                  border: "1px solid #292929",
                 }}
               >
-                <h3>🎁 Apply Coupon</h3>
-
-                <input
-                  type="text"
-                  placeholder="Enter Coupon Code"
+                <h2
                   style={{
-                    width: "100%",
-                    padding: "12px",
+                    margin: 0,
+                    fontSize: "20px",
+                    fontWeight: "700",
+                    color: "#fff",
+                  }}
+                >
+                  Order Summary ({cart.length} item
+                  {cart.length > 1 ? "s" : ""})
+                </h2>
+
+                {/* Original Price */}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginTop: "22px",
+                    color: "#aaa",
+                    fontSize: "15px",
+                  }}
+                >
+                  <span>Original Price</span>
+
+                  <span style={{ color: "#fff" }}>
+                    ₹{totalPrice.toLocaleString()}
+                  </span>
+                </div>
+
+                {/* Savings */}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
                     marginTop: "15px",
-                    borderRadius: "6px",
-                    border: "1px solid #ccc",
-                    outline: "none",
-                    boxSizing: "border-box",
+                    color: "#aaa",
+                    fontSize: "15px",
+                  }}
+                >
+                  <span>Savings</span>
+
+                  <span
+                    style={{
+                      color: "#00c8a0",
+                      fontWeight: "600",
+                    }}
+                  >
+                    + ₹5,000
+                  </span>
+                </div>
+
+                <hr
+                  style={{
+                    border: "none",
+                    borderTop: "1px solid #292929",
+                    margin: "18px 0",
                   }}
                 />
 
-                <button
+                {/* Total */}
+                <div
                   style={{
-                    width: "100%",
-                    marginTop: "15px",
-                    padding: "12px",
-                    background: "#00bcd4",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    fontSize: "18px",
+                    fontWeight: "700",
                     color: "#fff",
-                    border: "none",
-                    borderRadius: "6px",
-                    cursor: "pointer",
-                    fontWeight: "bold",
                   }}
                 >
-                  Apply Coupon
+                  <span>Total</span>
+
+                  <span>
+                    ₹{totalPrice.toLocaleString()}
+                  </span>
+                </div>
+
+                {/* Checkout Button */}
+                <button
+                  onClick={() => navigate("/checkout")}
+                  style={{
+                    width: "100%",
+                    marginTop: "20px",
+                    padding: "13px",
+                    border: "none",
+                    borderRadius: "5px",
+                    background: "#00c8a0",
+                    color: "#fff",
+                    fontSize: "16px",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                  }}
+                >
+                  Checkout
                 </button>
               </div>
 
               {/* Secure Checkout */}
               <div
                 style={{
-                  background: "#fff",
-                  marginTop: "20px",
-                  padding: "20px",
-                  borderRadius: "12px",
-                  boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+                  background: "#151515",
+                  marginTop: "15px",
+                  padding: "18px",
+                  borderRadius: "6px",
+                  border: "1px solid #292929",
                 }}
               >
-                <h3>🔒 Secure Checkout</h3>
+                <h3
+                  style={{
+                    margin: 0,
+                    fontSize: "16px",
+                    color: "#fff",
+                  }}
+                >
+                  🔒 Secure Checkout
+                </h3>
 
                 <p
                   style={{
-                    color: "#666",
+                    color: "#aaa",
+                    fontSize: "13px",
+                    lineHeight: "22px",
+                    marginBottom: 0,
                     marginTop: "10px",
-                    lineHeight: "24px",
                   }}
                 >
                   ✓ 100% Secure Payment
@@ -326,5 +501,16 @@ function Cart() {
     </>
   );
 }
+
+const quantityButton = {
+  width: "32px",
+  height: "32px",
+  borderRadius: "50%",
+  border: "1px solid #555",
+  background: "#222",
+  color: "#fff",
+  cursor: "pointer",
+  fontSize: "18px",
+};
 
 export default Cart;

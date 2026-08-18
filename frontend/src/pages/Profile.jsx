@@ -35,9 +35,12 @@ function Profile() {
     return (
       <>
         <Navbar />
+
         <div
           style={{
             minHeight: "70vh",
+            background: "#000",
+            color: "#fff",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -45,6 +48,7 @@ function Profile() {
         >
           <h2>Loading Profile...</h2>
         </div>
+
         <Footer />
       </>
     );
@@ -56,51 +60,77 @@ function Profile() {
 
       <div
         style={{
-          background: "#f5f5f5",
+          background: "#000",
+          color: "#fff",
           minHeight: "80vh",
           padding: "50px 20px",
         }}
       >
         <div
           style={{
-            maxWidth: "900px",
+            maxWidth: "1100px",
             margin: "0 auto",
           }}
         >
-          <h1>My Profile</h1>
+          {/* Header */}
 
-          <p style={{ color: "#777" }}>
-            Manage your account information
-          </p>
+          <div style={{ marginBottom: "30px" }}>
+            <h1
+              style={{
+                fontSize: "36px",
+                marginBottom: "8px",
+              }}
+            >
+              My Profile
+            </h1>
+
+            <p
+              style={{
+                color: "#aaa",
+                fontSize: "16px",
+              }}
+            >
+              Manage your account information
+            </p>
+          </div>
+
+          {/* Profile Card */}
 
           <div
             style={{
-              background: "#fff",
-              marginTop: "25px",
-              padding: "30px",
-              borderRadius: "14px",
-              boxShadow: "0 3px 12px rgba(0,0,0,0.08)",
+              background: "#171717",
+              borderRadius: "16px",
+              padding: "35px",
+              boxShadow: "0 5px 25px rgba(0,0,0,0.4)",
             }}
           >
+            {/* User Header */}
+
             <div
               style={{
-                textAlign: "center",
-                marginBottom: "30px",
+                display: "flex",
+                alignItems: "center",
+                gap: "25px",
+                paddingBottom: "30px",
+                borderBottom: "1px solid #333",
+                flexWrap: "wrap",
               }}
             >
+              {/* Avatar */}
+
               <div
                 style={{
                   width: "100px",
                   height: "100px",
-                  margin: "0 auto 15px",
                   borderRadius: "50%",
-                  background: "#00bcd4",
-                  color: "#fff",
+                  background: "#00c8c8",
+                  color: "#000",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
                   fontSize: "40px",
                   fontWeight: "bold",
+                  flexShrink: 0,
                 }}
               >
                 {user.name
@@ -108,88 +138,193 @@ function Profile() {
                   : "U"}
               </div>
 
-              <h2>{user.name || "User"}</h2>
+              {/* Name */}
 
-              <p style={{ color: "#777" }}>
-                {user.email || "No email"}
-              </p>
+              <div>
+                <h2
+                  style={{
+                    margin: 0,
+                    fontSize: "28px",
+                  }}
+                >
+                  {user.name || "User"}
+                </h2>
+
+                <p
+                  style={{
+                    color: "#aaa",
+                    marginTop: "8px",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {user.email || "No email"}
+                </p>
+
+                <span
+                  style={{
+                    display: "inline-block",
+                    background: "#252525",
+                    color: "#00c8c8",
+                    padding: "6px 14px",
+                    borderRadius: "20px",
+                    fontSize: "13px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {user.role || "Customer"}
+                </span>
+              </div>
             </div>
 
-            <hr />
-
-            <h2>Personal Information</h2>
-
-            <p>
-              <b>Name:</b> {user.name || "Not Added"}
-            </p>
-
-            <p>
-              <b>Email:</b> {user.email || "Not Added"}
-            </p>
-
-            <p>
-              <b>Phone:</b> {user.phone || "Not Added"}
-            </p>
-
-            <p>
-              <b>Role:</b> {user.role || "Customer"}
-            </p>
+            {/* Personal Information */}
 
             <div
               style={{
-                display: "flex",
-                gap: "15px",
                 marginTop: "30px",
-                flexWrap: "wrap",
               }}
             >
-              <button
-                onClick={() => navigate("/orders")}
-                style={buttonStyle}
-              >
-                📦 My Orders
-              </button>
-
-              <button
-                onClick={() => navigate("/wishlist")}
-                style={buttonStyle}
-              >
-                ❤️ My Wishlist
-              </button>
-
-              <button
-                onClick={() => navigate("/edit-profile")}
-                style={buttonStyle}
-              >
-                ✏️ Edit Profile
-              </button>
-
-              <button
-                onClick={() => navigate("/change-password")}
+              <h2
                 style={{
-                  ...buttonStyle,
-                  background: "#ff9800",
+                  fontSize: "22px",
+                  marginBottom: "20px",
                 }}
               >
-                🔐 Change Password
-              </button>
+                Personal Information
+              </h2>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns:
+                    "repeat(auto-fit, minmax(250px, 1fr))",
+                  gap: "18px",
+                }}
+              >
+                {/* Name */}
+
+                <div style={infoCard}>
+                  <span style={labelStyle}>Name</span>
+
+                  <strong>
+                    {user.name || "Not Added"}
+                  </strong>
+                </div>
+
+                {/* Email */}
+
+                <div style={infoCard}>
+                  <span style={labelStyle}>Email</span>
+
+                  <strong
+                    style={{
+                      wordBreak: "break-word",
+                    }}
+                  >
+                    {user.email || "Not Added"}
+                  </strong>
+                </div>
+
+                {/* Phone */}
+
+                <div style={infoCard}>
+                  <span style={labelStyle}>Phone</span>
+
+                  <strong>
+                    {user.phone || "Not Added"}
+                  </strong>
+                </div>
+
+                {/* Role */}
+
+                <div style={infoCard}>
+                  <span style={labelStyle}>Account Type</span>
+
+                  <strong>
+                    {user.role || "Customer"}
+                  </strong>
+                </div>
+              </div>
             </div>
+
+            {/* Account Actions */}
+
+            <div
+              style={{
+                marginTop: "35px",
+              }}
+            >
+              <h2
+                style={{
+                  fontSize: "22px",
+                  marginBottom: "20px",
+                }}
+              >
+                My Account
+              </h2>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns:
+                    "repeat(auto-fit, minmax(200px, 1fr))",
+                  gap: "15px",
+                }}
+              >
+                {/* Orders */}
+
+                <button
+                  onClick={() => navigate("/orders")}
+                  style={actionButton}
+                >
+                  <span style={iconStyle}>📦</span>
+
+                  <span>My Orders</span>
+                </button>
+
+                {/* Wishlist */}
+
+                <button
+                  onClick={() => navigate("/wishlist")}
+                  style={actionButton}
+                >
+                  <span style={iconStyle}>❤️</span>
+
+                  <span>My Wishlist</span>
+                </button>
+
+                {/* Edit Profile */}
+
+                <button
+                  onClick={() => navigate("/edit-profile")}
+                  style={actionButton}
+                >
+                  <span style={iconStyle}>✏️</span>
+
+                  <span>Edit Profile</span>
+                </button>
+
+                {/* Change Password */}
+
+                <button
+                  onClick={() =>
+                    navigate("/change-password")
+                  }
+                  style={actionButton}
+                >
+                  <span style={iconStyle}>🔐</span>
+
+                  <span>Change Password</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Logout */}
 
             <button
               onClick={logout}
-              style={{
-                width: "100%",
-                marginTop: "20px",
-                padding: "14px",
-                background: "#f44336",
-                color: "#fff",
-                border: "none",
-                borderRadius: "8px",
-                cursor: "pointer",
-                fontWeight: "bold",
-              }}
+              style={logoutButton}
             >
-              Logout
+              🚪 Logout
             </button>
           </div>
         </div>
@@ -200,16 +335,51 @@ function Profile() {
   );
 }
 
-const buttonStyle = {
-  flex: "1",
-  minWidth: "180px",
-  padding: "14px",
-  background: "#00bcd4",
+const infoCard = {
+  background: "#222",
+  border: "1px solid #333",
+  borderRadius: "10px",
+  padding: "18px",
+  display: "flex",
+  flexDirection: "column",
+  gap: "8px",
+};
+
+const labelStyle = {
+  color: "#888",
+  fontSize: "14px",
+};
+
+const actionButton = {
+  background: "#222",
+  color: "#fff",
+  border: "1px solid #333",
+  borderRadius: "10px",
+  padding: "18px",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  gap: "12px",
+  fontSize: "16px",
+  fontWeight: "bold",
+  transition: "0.2s",
+};
+
+const iconStyle = {
+  fontSize: "22px",
+};
+
+const logoutButton = {
+  width: "100%",
+  marginTop: "30px",
+  padding: "15px",
+  background: "#e53935",
   color: "#fff",
   border: "none",
-  borderRadius: "8px",
+  borderRadius: "10px",
   cursor: "pointer",
   fontWeight: "bold",
+  fontSize: "16px",
 };
 
 export default Profile;

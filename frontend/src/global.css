@@ -1,0 +1,117 @@
+/* =========================
+   GLOBAL RESET
+========================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #000 !important;
+  color: #fff !important;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* =========================
+   MAIN CONTAINERS
+========================= */
+
+main,
+section,
+article {
+  background-color: #000;
+  color: #fff;
+}
+
+/* =========================
+   TEXT
+========================= */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+label {
+  color: inherit;
+}
+
+/* =========================
+   LINKS
+========================= */
+
+a {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* =========================
+   INPUTS
+========================= */
+
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+/* =========================
+   IMAGES
+========================= */
+
+img {
+  max-width: 100%;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+button {
+  font-family: inherit;
+}
+
+/* =========================
+   DARK CARDS
+========================= */
+
+.card,
+.product-card,
+.category-card {
+  background: #181818;
+  color: #fff;
+}
+
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}

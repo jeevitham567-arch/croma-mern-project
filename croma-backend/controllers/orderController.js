@@ -27,6 +27,7 @@ const createRazorpayOrder = async (req, res) => {
     res.status(200).json({
       success: true,
       order: razorpayOrder,
+      key: process.env.RAZORPAY_KEY_ID,
     });
   } catch (error) {
     console.error("Create Razorpay Order Error:", error);
@@ -234,10 +235,7 @@ const updateOrderStatus = async (req, res) => {
       order,
     });
   } catch (error) {
-    console.error(
-      "Update Order Status Error:",
-      error
-    );
+    console.error("Update Order Status Error:", error);
 
     res.status(500).json({
       success: false,

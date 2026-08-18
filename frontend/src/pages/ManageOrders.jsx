@@ -42,16 +42,32 @@ function ManageOrders() {
         status,
       });
 
-      alert("Order status updated");
+      alert("Order status updated successfully");
 
       getOrders();
     } catch (error) {
-      console.log(error);
+      console.log("Update Status Error:", error);
 
       alert(
         error.response?.data?.message ||
           "Unable to update order status"
       );
+    }
+  };
+
+  // Convert saved JSON address string into object
+  const getAddress = (address) => {
+    if (!address) return null;
+
+    if (typeof address === "object") {
+      return address;
+    }
+
+    try {
+      return JSON.parse(address);
+    } catch (error) {
+      console.log("Address Parse Error:", error);
+      return null;
     }
   };
 
@@ -120,237 +136,251 @@ function ManageOrders() {
               margin: "0 auto",
             }}
           >
-            {orders.map((order) => (
-              <div
-                key={order._id}
-                style={{
-                  background: "#fff",
-                  padding: "25px",
-                  marginBottom: "25px",
-                  borderRadius: "12px",
-                  boxShadow:
-                    "0 2px 10px rgba(0,0,0,0.1)",
-                }}
-              >
+            {orders.map((order) => {
+              const address = getAddress(order.address);
+
+              return (
                 <div
+                  key={order._id}
                   style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    flexWrap: "wrap",
-                    gap: "15px",
+                    background: "#fff",
+                    padding: "25px",
+                    marginBottom: "25px",
+                    borderRadius: "12px",
+                    boxShadow:
+                      "0 2px 10px rgba(0,0,0,0.1)",
                   }}
                 >
-                  <div>
-                    <h3>Order ID</h3>
-
-                    <p
-                      style={{
-                        color: "#777",
-                        wordBreak: "break-all",
-                      }}
-                    >
-                      {order._id}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p style={{ color: "#777" }}>
-                      Order Date
-                    </p>
-
-                    <b>
-                      {order.createdAt
-                        ? new Date(
-                            order.createdAt
-                          ).toLocaleDateString()
-                        : "N/A"}
-                    </b>
-                  </div>
-                </div>
-
-                <hr />
-
-                <h3 style={{ marginTop: "20px" }}>
-                  Customer
-                </h3>
-
-                <p>
-                  <b>Name:</b>{" "}
-                  {order.user?.name || "Customer"}
-                </p>
-
-                <p>
-                  <b>Email:</b>{" "}
-                  {order.user?.email || "N/A"}
-                </p>
-
-                <h3 style={{ marginTop: "25px" }}>
-                  Products
-                </h3>
-
-                {order.items?.map((item, index) => (
+                  {/* ORDER DETAILS */}
                   <div
-                    key={item._id || index}
                     style={{
                       display: "flex",
-                      alignItems: "center",
-                      gap: "20px",
-                      padding: "15px 0",
-                      borderBottom:
-                        "1px solid #eee",
+                      justifyContent: "space-between",
+                      flexWrap: "wrap",
+                      gap: "15px",
                     }}
                   >
-                    {item.product?.image ? (
-                      <img
-                        src={`http://localhost:5000/uploads/${item.product.image}`}
-                        alt={
-                          item.product.name ||
-                          "Product"
-                        }
-                        style={{
-                          width: "80px",
-                          height: "80px",
-                          objectFit: "contain",
-                        }}
-                      />
-                    ) : (
-                      <div
-                        style={{
-                          width: "80px",
-                          height: "80px",
-                          background: "#f5f5f5",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      >
-                        📦
-                      </div>
-                    )}
-
                     <div>
-                      <h4>
-                        {item.product?.name ||
-                          "Product"}
-                      </h4>
-
-                      <p>
-                        Quantity:{" "}
-                        {item.quantity || 1}
-                      </p>
+                      <h3>Order ID</h3>
 
                       <p
                         style={{
-                          color: "#00b894",
-                          fontWeight: "bold",
+                          color: "#777",
+                          wordBreak: "break-all",
                         }}
                       >
-                        ₹{" "}
-                        {Number(
-                          item.product?.price || 0
-                        ).toLocaleString()}
+                        {order._id}
                       </p>
                     </div>
+
+                    <div>
+                      <p style={{ color: "#777" }}>
+                        Order Date
+                      </p>
+
+                      <b>
+                        {order.createdAt
+                          ? new Date(
+                              order.createdAt
+                            ).toLocaleDateString()
+                          : "N/A"}
+                      </b>
+                    </div>
                   </div>
-                ))}
 
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginTop: "25px",
-                    flexWrap: "wrap",
-                    gap: "15px",
-                  }}
-                >
-                  <h2>
-                    Total: ₹{" "}
-                    {Number(
-                      order.totalAmount || 0
-                    ).toLocaleString()}
-                  </h2>
+                  <hr />
 
-                  <select
-                    value={order.status || "Pending"}
-                    onChange={(e) =>
-                      updateStatus(
-                        order._id,
-                        e.target.value
-                      )
-                    }
-                    style={{
-                      padding: "10px 15px",
-                      borderRadius: "8px",
-                      border:
-                        "1px solid #ccc",
-                      fontSize: "15px",
-                    }}
-                  >
-                    <option value="Pending">
-                      Pending
-                    </option>
+                  {/* CUSTOMER */}
+                  <h3 style={{ marginTop: "20px" }}>
+                    Customer
+                  </h3>
 
-                    <option value="Processing">
-                      Processing
-                    </option>
+                  <p>
+                    <b>Name:</b>{" "}
+                    {order.user?.name || "Customer"}
+                  </p>
 
-                    <option value="Shipped">
-                      Shipped
-                    </option>
+                  <p>
+                    <b>Email:</b>{" "}
+                    {order.user?.email || "N/A"}
+                  </p>
 
-                    <option value="Delivered">
-                      Delivered
-                    </option>
+                  {/* PRODUCTS */}
+                  <h3 style={{ marginTop: "25px" }}>
+                    Products
+                  </h3>
 
-                    <option value="Cancelled">
-                      Cancelled
-                    </option>
-                  </select>
-                </div>
-
-                {order.address && (
-                  <div
-                    style={{
-                      marginTop: "25px",
-                      padding: "15px",
-                      background: "#f8f9fa",
-                      borderRadius: "8px",
-                    }}
-                  >
-                    <h3>
-                      📍 Delivery Address
-                    </h3>
-
-                    <p
+                  {order.items?.map((item, index) => (
+                    <div
+                      key={item._id || index}
                       style={{
-                        lineHeight: "24px",
-                        color: "#555",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "20px",
+                        padding: "15px 0",
+                        borderBottom:
+                          "1px solid #eee",
                       }}
                     >
-                      <b>
-                        {order.address.name}
-                      </b>
-                      <br />
+                      {item.product?.image ? (
+                        <img
+                          src={`http://localhost:5000/uploads/${item.product.image}`}
+                          alt={
+                            item.product.name ||
+                            "Product"
+                          }
+                          style={{
+                            width: "80px",
+                            height: "80px",
+                            objectFit: "contain",
+                          }}
+                        />
+                      ) : (
+                        <div
+                          style={{
+                            width: "80px",
+                            height: "80px",
+                            background: "#f5f5f5",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: "8px",
+                          }}
+                        >
+                          📦
+                        </div>
+                      )}
 
-                      {order.address.address}
-                      <br />
+                      <div>
+                        <h4>
+                          {item.product?.name ||
+                            "Product"}
+                        </h4>
 
-                      {order.address.city},{" "}
-                      {order.address.state}
-                      <br />
+                        <p>
+                          Quantity:{" "}
+                          {item.quantity || 1}
+                        </p>
 
-                      Pincode:{" "}
-                      {order.address.pincode}
-                      <br />
+                        <p
+                          style={{
+                            color: "#00b894",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          ₹{" "}
+                          {Number(
+                            item.price ||
+                              item.product?.price ||
+                              0
+                          ).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
 
-                      Phone:{" "}
-                      {order.address.phone}
-                    </p>
+                  {/* TOTAL + STATUS */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginTop: "25px",
+                      flexWrap: "wrap",
+                      gap: "15px",
+                    }}
+                  >
+                    <h2>
+                      Total: ₹{" "}
+                      {Number(
+                        order.totalAmount || 0
+                      ).toLocaleString()}
+                    </h2>
+
+                    <select
+                      value={
+                        order.status || "Pending"
+                      }
+                      onChange={(e) =>
+                        updateStatus(
+                          order._id,
+                          e.target.value
+                        )
+                      }
+                      style={{
+                        padding: "10px 15px",
+                        borderRadius: "8px",
+                        border: "1px solid #ccc",
+                        fontSize: "15px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <option value="Pending">
+                        Pending
+                      </option>
+
+                      <option value="Confirmed">
+                        Confirmed
+                      </option>
+
+                      <option value="Shipped">
+                        Shipped
+                      </option>
+
+                      <option value="Delivered">
+                        Delivered
+                      </option>
+
+                      <option value="Cancelled">
+                        Cancelled
+                      </option>
+                    </select>
                   </div>
-                )}
-              </div>
-            ))}
+
+                  {/* DELIVERY ADDRESS */}
+                  {address && (
+                    <div
+                      style={{
+                        marginTop: "25px",
+                        padding: "15px",
+                        background: "#f8f9fa",
+                        borderRadius: "8px",
+                      }}
+                    >
+                      <h3>
+                        📍 Delivery Address
+                      </h3>
+
+                      <p
+                        style={{
+                          lineHeight: "24px",
+                          color: "#555",
+                        }}
+                      >
+                        <b>
+                          {address.name || "N/A"}
+                        </b>
+                        <br />
+
+                        {address.address || "N/A"}
+                        <br />
+
+                        {address.city || "N/A"},{" "}
+                        {address.state || "N/A"}
+                        <br />
+
+                        Pincode:{" "}
+                        {address.pincode || "N/A"}
+                        <br />
+
+                        Phone:{" "}
+                        {address.phone || "N/A"}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </div>

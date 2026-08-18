@@ -70,7 +70,7 @@ function Checkout() {
 
       setLoading(true);
 
-      // Create Razorpay Order
+    
       const razorpayRes = await API.post(
         "/orders/create-razorpay-order",
         {
@@ -78,53 +78,81 @@ function Checkout() {
         }
       );
 
+      if (!razorpayRes.data.success) {
+        throw new Error(
+          razorpayRes.data.message ||
+            "Failed to create Razorpay order"
+        );
+      }
+
       const razorpayOrder = razorpayRes.data.order;
 
       const options = {
-        // Correct Razorpay TEST Key ID
-        key: "rzp_test_TKAbeJeGWAdL2U",
+        key: razorpayRes.data.key,
 
         amount: razorpayOrder.amount,
+
         currency: razorpayOrder.currency,
+
         name: "Croma",
+
         description: "Croma E-commerce Purchase",
+
         order_id: razorpayOrder.id,
 
         handler: async function (response) {
           try {
-            // Verify Razorpay Payment
+            
             const verifyRes = await API.post(
               "/orders/verify-payment",
               {
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
+                razorpay_order_id:
+                  response.razorpay_order_id,
+
+                razorpay_payment_id:
+                  response.razorpay_payment_id,
+
+                razorpay_signature:
+                  response.razorpay_signature,
               }
             );
 
-            if (verifyRes.data.success) {
-              const items = cart.map((item) => ({
-                product: item.product._id,
-                quantity: item.quantity,
-              }));
+            if (!verifyRes.data.success) {
+              alert("Payment verification failed");
+              setLoading(false);
+              return;
+            }
 
-              // Create final order
-              const orderRes = await API.post("/orders", {
+           
+            const items = cart.map((item) => ({
+            product: item.product._id,
+            quantity: item.quantity,
+            price: item.product.price,
+            }));
+
+            const orderRes = await API.post(
+              "/orders",
+              {
                 items,
                 totalAmount: grandTotal,
                 address: form,
-              });
-
-              if (orderRes.data.success) {
-                alert("Payment successful and order placed!");
-
-                navigate("/orders");
               }
+            );
+
+            if (orderRes.data.success) {
+              alert(
+                "Payment successful and order placed!"
+              );
+
+              navigate("/orders");
             } else {
-              alert("Payment verification failed");
+              alert("Failed to create order");
             }
           } catch (error) {
-            console.log("Payment verification error:", error);
+            console.log(
+              "Payment verification error:",
+              error
+            );
 
             alert(
               error.response?.data?.message ||
@@ -151,8 +179,35 @@ function Checkout() {
         },
       };
 
-      // Open Razorpay Checkout
+      // ===============================
+      // OPEN RAZORPAY CHECKOUT
+      // ===============================
+      if (!window.Razorpay) {
+        alert(
+          "Razorpay SDK not loaded. Please refresh the page."
+        );
+        setLoading(false);
+        return;
+      }
+
       const razorpay = new window.Razorpay(options);
+
+      razorpay.on(
+        "payment.failed",
+        function (response) {
+          console.log(
+            "Payment Failed:",
+            response.error
+          );
+
+          alert(
+            response.error?.description ||
+              "Payment failed"
+          );
+
+          setLoading(false);
+        }
+      );
 
       razorpay.open();
     } catch (error) {
@@ -160,6 +215,7 @@ function Checkout() {
 
       alert(
         error.response?.data?.message ||
+          error.message ||
           "Unable to start payment"
       );
 
@@ -261,7 +317,10 @@ function Checkout() {
             }}
           >
             <span>Subtotal</span>
-            <b>₹ {subtotal.toLocaleString()}</b>
+
+            <b>
+              ₹ {subtotal.toLocaleString()}
+            </b>
           </div>
 
           <div
@@ -275,6 +334,20 @@ function Checkout() {
 
             <span style={{ color: "green" }}>
               - ₹ {discount}
+            </span>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              marginTop: "10px",
+            }}
+          >
+            <span>Delivery</span>
+
+            <span style={{ color: "green" }}>
+              Free
             </span>
           </div>
 
@@ -301,11 +374,15 @@ function Checkout() {
           style={{
             width: "100%",
             padding: "15px",
-            background: loading ? "#999" : "#00bcd4",
+            background: loading
+              ? "#999"
+              : "#00bcd4",
             color: "#fff",
             border: "none",
             borderRadius: "8px",
-            cursor: loading ? "not-allowed" : "pointer",
+            cursor: loading
+              ? "not-allowed"
+              : "pointer",
             fontSize: "18px",
             fontWeight: "bold",
             marginTop: "20px",

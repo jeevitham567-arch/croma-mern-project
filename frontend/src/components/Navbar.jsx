@@ -1,35 +1,57 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   FaBars,
-  FaHeart,
   FaShoppingCart,
   FaUserCircle,
+  FaMapMarkerAlt,
+  FaBox,
+  FaAward,
+  FaHeart,
+  FaTv,
+  FaCommentDots,
+  FaPowerOff,
+  FaTimes,
 } from "react-icons/fa";
 import { useState } from "react";
 import logo from "../assets/Croma_Logo_acrkvn.svg";
 
 function Navbar({ search = "", setSearch = () => {} }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const user = JSON.parse(localStorage.getItem("user"));
 
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    setProfileOpen(false);
+    navigate("/login");
+  };
+
   return (
     <>
+      {/* ================= NAVBAR ================= */}
+
       <nav
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
           padding: "15px 40px",
-          background: "#1a1a1a",
-          color: "white",
+          background: "#000",
+          color: "#fff",
           position: "sticky",
           top: 0,
           zIndex: 1000,
           gap: "20px",
+          borderBottom: "1px solid #222",
         }}
       >
-        {/* Menu + Logo */}
+        {/* MENU + LOGO */}
+
         <div
           style={{
             display: "flex",
@@ -39,7 +61,9 @@ function Navbar({ search = "", setSearch = () => {} }) {
         >
           <FaBars
             size={24}
-            style={{ cursor: "pointer" }}
+            style={{
+              cursor: "pointer",
+            }}
             onClick={() => setMenuOpen(true)}
           />
 
@@ -56,7 +80,8 @@ function Navbar({ search = "", setSearch = () => {} }) {
           </Link>
         </div>
 
-        {/* Search */}
+        {/* SEARCH */}
+
         <input
           type="text"
           placeholder="What are you looking for?"
@@ -74,7 +99,8 @@ function Navbar({ search = "", setSearch = () => {} }) {
           }}
         />
 
-        {/* Right Side */}
+        {/* RIGHT SIDE */}
+
         <div
           style={{
             display: "flex",
@@ -82,15 +108,7 @@ function Navbar({ search = "", setSearch = () => {} }) {
             gap: "22px",
           }}
         >
-          <Link
-            to="/wishlist"
-            style={{
-              color: "#fff",
-              fontSize: "22px",
-            }}
-          >
-            <FaHeart />
-          </Link>
+          {/* CART */}
 
           <Link
             to="/cart"
@@ -102,62 +120,206 @@ function Navbar({ search = "", setSearch = () => {} }) {
             <FaShoppingCart />
           </Link>
 
-          <Link
-            to="/orders"
+          {/* PROFILE */}
+
+          <div
             style={{
-              color: "#fff",
-              textDecoration: "none",
+              position: "relative",
             }}
           >
-            Orders
-          </Link>
-
-          <Link
-            to="/profile"
-            style={{
-              color: "#fff",
-              fontSize: "24px",
-            }}
-          >
-            <FaUserCircle />
-          </Link>
-
-          {!user ? (
-            <Link
-              to="/login"
+            <FaUserCircle
+              size={27}
               style={{
-                color: "#fff",
-                textDecoration: "none",
+                cursor: "pointer",
               }}
-            >
-              Login
-            </Link>
-          ) : (
-            <span
-              style={{
-                color: "#00c8c8",
-                fontWeight: "bold",
-              }}
-            >
-              {user.name}
-            </span>
-          )}
+              onClick={() => setProfileOpen(!profileOpen)}
+            />
+
+            {/* PROFILE DROPDOWN */}
+
+            {profileOpen && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "45px",
+                  right: 0,
+                  width: "320px",
+                  background: "#181818",
+                  borderRadius: "8px",
+                  padding: "16px",
+                  boxShadow: "0 10px 30px rgba(0,0,0,0.7)",
+                  borderRight: "3px solid #00e6a8",
+                  zIndex: 3000,
+                }}
+              >
+                {/* PROFILE HEADER */}
+
+                <div
+                  style={{
+                    padding: "5px 10px 15px",
+                    borderBottom: "1px solid #333",
+                    marginBottom: "8px",
+                  }}
+                >
+                  <h3
+                    style={{
+                      margin: 0,
+                      color: "#fff",
+                      fontSize: "18px",
+                    }}
+                  >
+                    {user?.name || "Guest User"}
+                  </h3>
+
+                  <p
+                    style={{
+                      margin: "5px 0 0",
+                      color: "#999",
+                      fontSize: "12px",
+                    }}
+                  >
+                    {user?.email || "Login to your account"}
+                  </p>
+
+                  <button
+                    onClick={() => {
+                      setProfileOpen(false);
+
+                      if (user) {
+                        navigate("/edit-profile");
+                      } else {
+                        navigate("/login");
+                      }
+                    }}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "#00e6a8",
+                      cursor: "pointer",
+                      fontSize: "12px",
+                      padding: "8px 0 0",
+                    }}
+                  >
+                    {user
+                      ? "Edit your basic details"
+                      : "Login to your account"}
+                  </button>
+                </div>
+
+                {/* ADDRESS */}
+
+                <ProfileMenuItem
+                  icon={<FaMapMarkerAlt />}
+                  title="My Address"
+                  description="Manage your saved addresses"
+                  onClick={() => {
+                    setProfileOpen(false);
+                    alert("Address management coming soon");
+                  }}
+                />
+
+                {/* ORDERS */}
+
+                <ProfileMenuItem
+                  icon={<FaBox />}
+                  title="My Orders"
+                  description="View, track, cancel orders and buy again"
+                  onClick={() => {
+                    setProfileOpen(false);
+                    navigate("/orders");
+                  }}
+                />
+
+                {/* PRIVILEGE OFFERS */}
+
+                <ProfileMenuItem
+                  icon={<FaAward />}
+                  title="My Privilege Offers"
+                  description="Exclusive offers for you"
+                  onClick={() => {
+                    setProfileOpen(false);
+                    alert("Privilege Offers coming soon");
+                  }}
+                />
+
+                {/* WISHLIST */}
+
+                <ProfileMenuItem
+                  icon={<FaHeart />}
+                  title="My Wishlist"
+                  description="Have a look at your favourite products"
+                  onClick={() => {
+                    setProfileOpen(false);
+                    navigate("/wishlist");
+                  }}
+                />
+
+                {/* DEVICES */}
+
+                <ProfileMenuItem
+                  icon={<FaTv />}
+                  title="My Devices & Plans"
+                  description="Manage your devices and plans"
+                  onClick={() => {
+                    setProfileOpen(false);
+                    alert("Devices & Plans coming soon");
+                  }}
+                />
+
+                {/* SERVICE REQUEST */}
+
+                <ProfileMenuItem
+                  icon={<FaCommentDots />}
+                  title="My Service Requests"
+                  description="Manage complaints, feedback and service requests"
+                  onClick={() => {
+                    setProfileOpen(false);
+                    alert("Service Requests coming soon");
+                  }}
+                />
+
+                {/* LOGIN / LOGOUT */}
+
+                {!user ? (
+                  <ProfileMenuItem
+                    icon={<FaUserCircle />}
+                    title="Login"
+                    onClick={() => {
+                      setProfileOpen(false);
+                      navigate("/login");
+                    }}
+                  />
+                ) : (
+                  <ProfileMenuItem
+                    icon={<FaPowerOff />}
+                    title="Logout"
+                    onClick={logout}
+                    danger
+                  />
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </nav>
 
-      {/* Sidebar */}
+      {/* ================= SIDEBAR ================= */}
+
       {menuOpen && (
         <>
-          {/* Overlay */}
+          {/* OVERLAY */}
+
           <div
             onClick={() => setMenuOpen(false)}
             style={{
               position: "fixed",
               inset: 0,
-              background: "rgba(0,0,0,0.5)",
+              background: "rgba(0,0,0,0.6)",
               zIndex: 1999,
             }}
           />
+
+          {/* SIDEBAR */}
 
           <div
             style={{
@@ -167,28 +329,46 @@ function Navbar({ search = "", setSearch = () => {} }) {
               width: "300px",
               maxWidth: "80%",
               height: "100vh",
-              background: "#1f1f1f",
+              background: "#111",
               color: "#fff",
               padding: "25px",
               zIndex: 2000,
-              boxShadow: "5px 0 20px rgba(0,0,0,.4)",
+              boxShadow: "5px 0 20px rgba(0,0,0,.5)",
               boxSizing: "border-box",
               overflowY: "auto",
             }}
           >
-            <h2
+            {/* SIDEBAR HEADER */}
+
+            <div
               style={{
-                marginBottom: "20px",
-                color: "#00c8c8",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
             >
-              ☰ Shop by Category
-            </h2>
+              <h2
+                style={{
+                  color: "#00c8c8",
+                  margin: 0,
+                }}
+              >
+                Shop by Category
+              </h2>
+
+              <FaTimes
+                size={22}
+                style={{
+                  cursor: "pointer",
+                }}
+                onClick={() => setMenuOpen(false)}
+              />
+            </div>
 
             <hr
               style={{
-                border: "1px solid #444",
-                marginBottom: "20px",
+                border: "1px solid #333",
+                margin: "20px 0",
               }}
             />
 
@@ -217,10 +397,10 @@ function Navbar({ search = "", setSearch = () => {} }) {
 
               <Link
                 style={linkStyle}
-                to="/category/televisions"
+                to="/category/television"
                 onClick={() => setMenuOpen(false)}
               >
-                📺 Televisions
+                📺 Television
               </Link>
 
               <Link
@@ -257,7 +437,7 @@ function Navbar({ search = "", setSearch = () => {} }) {
 
               <Link
                 style={linkStyle}
-                to="/category/smart-watches"
+                to="/category/smart-watch"
                 onClick={() => setMenuOpen(false)}
               >
                 ⌚ Smart Watches
@@ -265,7 +445,7 @@ function Navbar({ search = "", setSearch = () => {} }) {
 
               <Link
                 style={linkStyle}
-                to="/category/cameras"
+                to="/category/camera"
                 onClick={() => setMenuOpen(false)}
               >
                 📷 Cameras
@@ -280,6 +460,8 @@ function Navbar({ search = "", setSearch = () => {} }) {
               </Link>
             </div>
 
+            {/* CLOSE BUTTON */}
+
             <button
               onClick={() => setMenuOpen(false)}
               style={{
@@ -289,7 +471,7 @@ function Navbar({ search = "", setSearch = () => {} }) {
                 border: "none",
                 borderRadius: "8px",
                 background: "#00c8c8",
-                color: "#fff",
+                color: "#000",
                 cursor: "pointer",
                 fontWeight: "bold",
                 fontSize: "16px",
@@ -304,13 +486,84 @@ function Navbar({ search = "", setSearch = () => {} }) {
   );
 }
 
+/* ================= PROFILE MENU ITEM ================= */
+
+function ProfileMenuItem({
+  icon,
+  title,
+  description,
+  onClick,
+  danger = false,
+}) {
+  return (
+    <div
+      onClick={onClick}
+      style={{
+        display: "flex",
+        alignItems: "flex-start",
+        padding: "12px 10px",
+        cursor: "pointer",
+        borderRadius: "6px",
+        transition: "0.2s",
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.background = "#262626";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.background = "transparent";
+      }}
+    >
+      <div
+        style={{
+          fontSize: "18px",
+          marginRight: "15px",
+          marginTop: "2px",
+          width: "20px",
+          textAlign: "center",
+          color: danger ? "#ff5252" : "#fff",
+        }}
+      >
+        {icon}
+      </div>
+
+      <div>
+        <h4
+          style={{
+            fontSize: "14px",
+            fontWeight: "600",
+            color: danger ? "#ff5252" : "#fff",
+            margin: "0 0 3px",
+          }}
+        >
+          {title}
+        </h4>
+
+        {description && (
+          <p
+            style={{
+              fontSize: "11px",
+              color: "#999",
+              lineHeight: "1.3",
+              margin: 0,
+            }}
+          >
+            {description}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ================= SIDEBAR LINK ================= */
+
 const linkStyle = {
   color: "#fff",
   textDecoration: "none",
   fontSize: "17px",
-  padding: "10px",
+  padding: "12px",
   borderRadius: "8px",
-  background: "#2d2d2d",
+  background: "#222",
 };
 
 export default Navbar;

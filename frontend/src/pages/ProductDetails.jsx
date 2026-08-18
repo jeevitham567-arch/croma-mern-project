@@ -30,7 +30,10 @@ function ProductDetails() {
       setProduct(res.data.product);
     } catch (error) {
       console.log("Product Error:", error);
-      alert("Unable to load product");
+      alert(
+        error.response?.data?.message ||
+          "Unable to load product"
+      );
     }
   };
 
@@ -41,6 +44,7 @@ function ProductDetails() {
       setReviews(res.data.reviews || []);
     } catch (error) {
       console.log("Reviews Error:", error);
+      setReviews([]);
     }
   };
 
@@ -51,19 +55,23 @@ function ProductDetails() {
 
       await API.post("/cart", {
         productId: id,
-        quantity: quantity,
+        quantity,
       });
 
       alert("Product Added To Cart 🛒");
-
       navigate("/cart");
     } catch (error) {
       console.log("Add Cart Error:", error);
 
-      alert(
-        error.response?.data?.message ||
-          "Unable to add product to cart"
-      );
+      if (error.response?.status === 401) {
+        alert("Please login first");
+        navigate("/login");
+      } else {
+        alert(
+          error.response?.data?.message ||
+            "Unable to add product to cart"
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -76,23 +84,28 @@ function ProductDetails() {
 
       await API.post("/cart", {
         productId: id,
-        quantity: quantity,
+        quantity,
       });
 
       navigate("/checkout");
     } catch (error) {
       console.log("Buy Now Error:", error);
 
-      alert(
-        error.response?.data?.message ||
-          "Unable to continue"
-      );
+      if (error.response?.status === 401) {
+        alert("Please login first");
+        navigate("/login");
+      } else {
+        alert(
+          error.response?.data?.message ||
+            "Unable to continue"
+        );
+      }
     } finally {
       setLoading(false);
     }
   };
 
-  // ADD WISHLIST
+  // ADD TO WISHLIST
   const addToWishlist = async () => {
     try {
       await API.post("/wishlist", {
@@ -103,16 +116,21 @@ function ProductDetails() {
     } catch (error) {
       console.log("Wishlist Error:", error);
 
-      alert(
-        error.response?.data?.message ||
-          "Unable to add to wishlist"
-      );
+      if (error.response?.status === 401) {
+        alert("Please login first");
+        navigate("/login");
+      } else {
+        alert(
+          error.response?.data?.message ||
+            "Unable to add to wishlist"
+        );
+      }
     }
   };
 
   // SUBMIT REVIEW
   const submitReview = async () => {
-    if (!name || !comment) {
+    if (!name.trim() || !comment.trim()) {
       alert("Please enter your name and review");
       return;
     }
@@ -163,12 +181,13 @@ function ProductDetails() {
     );
   }
 
+  const isOutOfStock = product.stock <= 0;
+
   return (
     <>
       <Navbar />
 
       {/* PRODUCT DETAILS */}
-
       <div
         style={{
           background: "#f5f5f5",
@@ -191,7 +210,6 @@ function ProductDetails() {
           }}
         >
           {/* IMAGE */}
-
           <div
             style={{
               flex: "1",
@@ -212,7 +230,6 @@ function ProductDetails() {
           </div>
 
           {/* DETAILS */}
-
           <div
             style={{
               flex: "1",
@@ -237,7 +254,7 @@ function ProductDetails() {
                 marginTop: "20px",
               }}
             >
-              ₹ {product.price.toLocaleString()}
+              ₹ {Number(product.price || 0).toLocaleString()}
             </h2>
 
             <p
@@ -262,8 +279,7 @@ function ProductDetails() {
             </p>
 
             {/* QUANTITY */}
-
-            {product.stock > 0 && (
+            {!isOutOfStock && (
               <div
                 style={{
                   display: "flex",
@@ -311,7 +327,6 @@ function ProductDetails() {
             )}
 
             {/* BUTTONS */}
-
             <div
               style={{
                 display: "flex",
@@ -323,14 +338,17 @@ function ProductDetails() {
               <button
                 onClick={addToCart}
                 disabled={
-                  loading || product.stock <= 0
+                  loading || isOutOfStock
                 }
                 style={{
                   ...actionButton,
-                  background:
-                    product.stock <= 0
-                      ? "#999"
-                      : "#00bcd4",
+                  background: isOutOfStock
+                    ? "#999"
+                    : "#00bcd4",
+                  cursor:
+                    loading || isOutOfStock
+                      ? "not-allowed"
+                      : "pointer",
                 }}
               >
                 🛒 Add To Cart
@@ -339,14 +357,17 @@ function ProductDetails() {
               <button
                 onClick={buyNow}
                 disabled={
-                  loading || product.stock <= 0
+                  loading || isOutOfStock
                 }
                 style={{
                   ...actionButton,
-                  background:
-                    product.stock <= 0
-                      ? "#999"
-                      : "#00b894",
+                  background: isOutOfStock
+                    ? "#999"
+                    : "#00b894",
+                  cursor:
+                    loading || isOutOfStock
+                      ? "not-allowed"
+                      : "pointer",
                 }}
               >
                 ⚡ Buy Now
@@ -367,7 +388,6 @@ function ProductDetails() {
       </div>
 
       {/* REVIEWS */}
-
       <div
         style={{
           maxWidth: "900px",
@@ -447,7 +467,7 @@ function ProductDetails() {
               <h3>{review.name}</h3>
 
               <p>
-                {"⭐".repeat(review.rating)}
+                {"⭐".repeat(review.rating || 0)}
               </p>
 
               <p
