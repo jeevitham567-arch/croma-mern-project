@@ -1,23 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import "./LocationPopup.css";
 
 const LocationPopup = ({ onClose }) => {
-  const [location, setLocation] = useState("");
   const [pincode, setPincode] = useState("");
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const savedLocation = localStorage.getItem("userLocation");
-    const savedPincode = localStorage.getItem("userPincode");
-
-    if (savedLocation) {
-      setLocation(savedLocation);
-    }
-
-    if (savedPincode) {
-      setPincode(savedPincode);
-    }
-  }, []);
 
   const detectLocation = () => {
     setLoading(true);
@@ -30,99 +16,43 @@ const LocationPopup = ({ onClose }) => {
 
     navigator.geolocation.getCurrentPosition(
       async (position) => {
-        const { latitude, longitude } = position.coords;
-
         try {
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&addressdetails=1`,
-            {
-              headers: {
-                Accept: "application/json",
-              },
-            }
-          );
+          const { latitude, longitude } = position.coords;
 
-          if (!response.ok) {
-            throw new Error("Failed to get address");
-          }
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+          );
 
           const data = await response.json();
 
-          const address = data.display_name
-            ? data.display_name
-            : `${latitude}, ${longitude}`;
+          const detectedPincode = data.address?.postcode || "";
 
-          const detectedPincode =
-            data.address?.postcode || "";
-
-          setLocation(address);
-          setPincode(detectedPincode);
+          if (detectedPincode) {
+            setPincode(detectedPincode);
+          } else {
+            alert("Pincode could not be detected.");
+          }
         } catch (error) {
-          console.error("Location error:", error);
-
-          setLocation(`${latitude}, ${longitude}`);
+          console.error(error);
+          alert("Unable to detect location.");
+        } finally {
+          setLoading(false);
         }
-
-        setLoading(false);
       },
-
-      (error) => {
-        console.error("Geolocation error:", error);
-
-        if (error.code === error.PERMISSION_DENIED) {
-          alert(
-            "Location permission denied. Please allow location access in your browser."
-          );
-        } else if (error.code === error.POSITION_UNAVAILABLE) {
-          alert("Unable to detect your location.");
-        } else if (error.code === error.TIMEOUT) {
-          alert("Location request timed out. Please try again.");
-        } else {
-          alert("Unable to get your location.");
-        }
-
+      () => {
+        alert("Please allow location access.");
         setLoading(false);
-      },
-
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 0,
       }
     );
   };
 
-  const handlePincodeChange = (e) => {
-    const value = e.target.value;
-
-    // Only numbers and maximum 6 digits
-    if (/^\d{0,6}$/.test(value)) {
-      setPincode(value);
-    }
-  };
-
   const handleContinue = () => {
-    const trimmedLocation = location.trim();
-    const trimmedPincode = pincode.trim();
-
-    if (!trimmedLocation) {
-      alert("Please enter your location.");
+    if (!pincode) {
+      alert("Please enter or detect your pincode.");
       return;
     }
 
-    if (!trimmedPincode) {
-      alert("Please enter your pincode.");
-      return;
-    }
-
-    if (trimmedPincode.length !== 6) {
-      alert("Please enter a valid 6-digit pincode.");
-      return;
-    }
-
-    localStorage.setItem("userLocation", trimmedLocation);
-    localStorage.setItem("userPincode", trimmedPincode);
-
+    localStorage.setItem("userPincode", pincode);
     onClose();
   };
 
@@ -130,99 +60,57 @@ const LocationPopup = ({ onClose }) => {
     <div className="location-overlay">
       <div className="location-popup">
 
-        {/* Close */}
-        <button
-          className="location-close"
-          onClick={onClose}
-          aria-label="Close"
-        >
+        {/* Close Button */}
+        <button className="close-btn" onClick={onClose}>
           ×
         </button>
 
-        {/* Location Icon */}
-        <div className="location-icon">
-          
-        </div>
-
         {/* Heading */}
-        <h2>Select your location</h2>
+        <h2>Select your Location</h2>
 
         <p className="location-subtitle">
-          Enter your location to check product availability
-          and delivery options.
+          To Check Products & Delivery Options available at your location
         </p>
 
         {/* Current Location */}
         <button
-          className="detect-location-btn"
+          className="detect-btn"
           onClick={detectLocation}
           disabled={loading}
         >
-           {" "}
           {loading
-            ? "Detecting your location..."
-            : "Use my current location"}
+            ? "Detecting..."
+            : "📍 Use my current location"}
         </button>
 
-        {/* Divider */}
-        <div className="location-divider">
+        {/* OR */}
+        <div className="or-section">
           <span></span>
-          <p>OR</p>
+          <b>OR</b>
           <span></span>
         </div>
 
-        {/* Location Input */}
-        <div className="location-input-wrapper">
-          <span className="input-location-icon">
-          
-          </span>
-
-          <input
-            type="text"
-            placeholder="Enter your location"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-          />
-        </div>
+        {/* Sign In */}
+        <button className="signin-address">
+          Sign in to select address
+        </button>
 
         {/* Pincode */}
-        <div className="location-input-wrapper pincode-wrapper">
-          <span className="input-location-icon">
-            
-          </span>
-
+        <div className="pincode-section">
           <input
             type="text"
-            inputMode="numeric"
-            maxLength="6"
-            placeholder="Enter 6-digit pincode"
+            placeholder="Enter Pincode"
             value={pincode}
-            onChange={handlePincodeChange}
+            maxLength="6"
+            onChange={(e) =>
+              setPincode(e.target.value.replace(/\D/g, ""))
+            }
           />
         </div>
-
-        {/* Selected Location */}
-        {location.trim() && (
-          <div className="selected-location">
-            <span></span>
-
-            <div>
-              <small>Selected location</small>
-              <p>{location}</p>
-
-              {pincode && (
-                <p className="selected-pincode">
-                  Pincode: {pincode}
-                </p>
-              )}
-            </div>
-          </div>
-        )}
 
         {/* Continue */}
         <button
-          type="button"
-          className="continue-location-btn"
+          className="continue-btn"
           onClick={handleContinue}
         >
           Continue
