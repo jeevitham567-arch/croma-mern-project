@@ -12,13 +12,9 @@ function Home() {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-
-  // ================= LOCATION STATE =================
   const [showLocation, setShowLocation] = useState(true);
 
   const productsRef = useRef(null);
-
-  // ================= GET PRODUCTS =================
   useEffect(() => {
     getProducts();
   }, []);
@@ -32,7 +28,6 @@ function Home() {
     }
   };
 
-  // ================= FILTER PRODUCTS =================
   const filteredProducts = products.filter((product) => {
     const productName = product.name?.toLowerCase() || "";
     const productCategory = product.category?.toLowerCase() || "";
@@ -49,8 +44,9 @@ function Home() {
   return (
     <div
       style={{
-        background: "#f5f5f5",
+        background: "#000000",
         minHeight: "100vh",
+        color: "#ffffff",
       }}
     >
       {/* ================= LOCATION POPUP ================= */}
@@ -75,7 +71,7 @@ function Home() {
       {search === "" && (
         <section
           style={{
-            background: "#ffffff",
+            background: "#000000",
             padding: "35px 30px",
             marginTop: "20px",
           }}
@@ -92,7 +88,7 @@ function Home() {
         ref={productsRef}
         style={{
           padding: "50px 40px",
-          background: "#f1f3f6",
+          background: "#000000",
           marginTop: "20px",
         }}
       >
@@ -102,11 +98,12 @@ function Home() {
             margin: "0 auto",
           }}
         >
+          {/* ================= HEADING ================= */}
           <h2
             style={{
               textAlign: "center",
               fontSize: "32px",
-              color: "#111",
+              color: "#ffffff",
               marginBottom: "10px",
               fontWeight: "700",
             }}
@@ -117,7 +114,7 @@ function Home() {
           <p
             style={{
               textAlign: "center",
-              color: "#666",
+              color: "#cccccc",
               marginBottom: "35px",
               fontSize: "16px",
             }}
@@ -145,17 +142,16 @@ function Home() {
               <div
                 style={{
                   gridColumn: "1 / -1",
-                  background: "#ffffff",
+                  background: "#1a1a1a",
                   padding: "50px",
                   borderRadius: "12px",
                   textAlign: "center",
-                  boxShadow:
-                    "0 2px 10px rgba(0,0,0,0.08)",
+                  border: "1px solid #333",
                 }}
               >
                 <h2
                   style={{
-                    color: "#777",
+                    color: "#cccccc",
                     margin: 0,
                   }}
                 >
@@ -171,7 +167,8 @@ function Home() {
       <section
         style={{
           padding: "55px 40px",
-          background: "#ffffff",
+          background: "#000000",
+          borderTop: "1px solid #222",
         }}
       >
         <h2
@@ -179,7 +176,7 @@ function Home() {
             textAlign: "center",
             fontSize: "30px",
             marginBottom: "35px",
-            color: "#111",
+            color: "#ffffff",
           }}
         >
           ⭐ Featured Brands
@@ -224,16 +221,18 @@ function Home() {
       {/* ================= NEWSLETTER BLOCK ================= */}
       <section
         style={{
-          background: "#202020",
+          background: "#111111",
           color: "#ffffff",
           textAlign: "center",
           padding: "55px 20px",
+          borderTop: "1px solid #222",
         }}
       >
         <h2
           style={{
             fontSize: "30px",
             marginBottom: "10px",
+            color: "#ffffff",
           }}
         >
           Stay Updated
@@ -265,9 +264,11 @@ function Home() {
               maxWidth: "90%",
               padding: "14px 18px",
               borderRadius: "25px",
-              border: "none",
+              border: "1px solid #444",
               outline: "none",
               fontSize: "15px",
+              background: "#ffffff",
+              color: "#000000",
             }}
           />
 
@@ -276,7 +277,7 @@ function Home() {
             style={{
               padding: "14px 28px",
               background: "#00c8c8",
-              color: "#ffffff",
+              color: "#000000",
               border: "none",
               borderRadius: "25px",
               cursor: "pointer",
@@ -295,18 +296,17 @@ function Home() {
   );
 }
 
-/* ================= BRAND STYLE ================= */
-
 const brandStyle = {
-  background: "#f7f7f7",
+  background: "#1a1a1a",
   padding: "22px 35px",
   minWidth: "150px",
   borderRadius: "12px",
   fontSize: "20px",
   fontWeight: "bold",
   textAlign: "center",
-  color: "#222",
-  boxShadow: "0 3px 12px rgba(0,0,0,0.08)",
+  color: "#ffffff",
+  border: "1px solid #333333",
+  boxShadow: "0 3px 12px rgba(0,0,0,0.5)",
   transition: "0.3s",
   cursor: "pointer",
 };
