@@ -1,10 +1,7 @@
-const Order = require("../models/Order");
+const Order = require("../models/order");
 const crypto = require("crypto");
 const razorpay = require("../config/razorpay");
 
-// ===============================
-// CREATE RAZORPAY ORDER
-// ===============================
 const createRazorpayOrder = async (req, res) => {
   try {
     const { amount } = req.body;
@@ -40,9 +37,6 @@ const createRazorpayOrder = async (req, res) => {
   }
 };
 
-// ===============================
-// VERIFY RAZORPAY PAYMENT
-// ===============================
 const verifyPayment = async (req, res) => {
   try {
     const {
@@ -97,9 +91,6 @@ const verifyPayment = async (req, res) => {
   }
 };
 
-// ===============================
-// CREATE FINAL ORDER
-// ===============================
 const createOrder = async (req, res) => {
   try {
     const {
@@ -138,9 +129,6 @@ const createOrder = async (req, res) => {
   }
 };
 
-// ===============================
-// GET MY ORDERS
-// ===============================
 const getMyOrders = async (req, res) => {
   try {
     const orders = await Order.find({
@@ -164,9 +152,6 @@ const getMyOrders = async (req, res) => {
   }
 };
 
-// ===============================
-// GET ALL ORDERS - ADMIN
-// ===============================
 const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
@@ -189,9 +174,6 @@ const getAllOrders = async (req, res) => {
   }
 };
 
-// ===============================
-// UPDATE ORDER STATUS - ADMIN
-// ===============================
 const updateOrderStatus = async (req, res) => {
   try {
     const { status } = req.body;
@@ -245,9 +227,6 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-// ===============================
-// EXPORT ALL FUNCTIONS
-// ===============================
 module.exports = {
   createRazorpayOrder,
   verifyPayment,
